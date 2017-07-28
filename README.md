@@ -1,20 +1,20 @@
 
 # generator-azure-node
-> Yeoman generator for Azure Service Fabric Java projects
+> Yeoman generator for Azure Service Fabric CSharp projects
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-azuresfjava using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, install [Yeoman](http://yeoman.io) and generator-azuresfcharp using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
 ```bash
 npm install -g yo
-npm install -g generator-azuresfjava
+npm install -g generator-azuresfcsharp
 ```
 
 Then generate your new project:
 
 ```bash
-yo azuresfjava
+yo azuresfcsharp
 ```
 
 ## Getting To Know Yeoman

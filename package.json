@@ -1,0 +1,27 @@
+{
+  "name": "generator-azuresfcsharp",
+  "version": "0.0.0",
+  "description": "Azure Service Fabric CSharp app template generator",
+  "homepage": "https://azure.microsoft.com/en-in/services/service-fabric/",
+  "authors": {
+    "name": "Microsoft , Service Fabric",
+    "url": "https://github.com/Azure/generator-azuresfcsharp"
+  },
+  "files": [
+    "generators"
+  ],
+  "main": "generators/index.js",
+  "keywords": [
+    "Azure",
+    "Service Fabric",
+    "yeoman-generator"
+  ],
+  "dependencies": {
+   "yeoman-generator": "^0.22.5",
+   "yosay": "^1.1.0",
+   "xml2js": "^0.4.6",
+   "chalk": "^1.1.3"
+  },
+  "repository": "https://github.com/Azure/generator-azuresfcsharp",
+  "license": "MIT"
+}

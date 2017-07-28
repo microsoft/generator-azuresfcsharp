@@ -1,0 +1,7 @@
+{
+  "generator-azuresf": {
+    "projName": "appname",
+    "frameworkType": "Reliable Stateless Service - C#",
+    "author": "<your name>"
+  }
+}

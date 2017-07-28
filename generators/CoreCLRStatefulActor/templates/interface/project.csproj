@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description><%= actorName %>.Interfaces Class Library</Description>
+    <Authors><%= authorName %> </Authors>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName><%= actorName %>.Interfaces</AssemblyName>
+    <PackageId><%= actorName %>.Interfaces</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback)</PackageTargetFallback>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="0.9.0-*" />
+  </ItemGroup>
+
+</Project>

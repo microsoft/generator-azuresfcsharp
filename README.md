@@ -4,12 +4,14 @@
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-azuresfcharp using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, install [Yeoman](http://yeoman.io) and generator-azuresfcharp using [npm](https://www.npmjs.com/) (we assume you have pre-installed [npm](http://www.npmjs.com) and [node.js](https://nodejs.org/)).
 
 ```bash
 npm install -g yo
 npm install -g generator-azuresfcsharp
 ```
+The commands might ask for root access. Please run them with ```sudo```, if needed.
+
 
 Then generate your new project:
 

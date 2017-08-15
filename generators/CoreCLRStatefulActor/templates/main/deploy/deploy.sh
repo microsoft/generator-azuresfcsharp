@@ -1,7 +1,5 @@
 #!/bin/bash
 
-azure servicefabric application package copy <%= appName %> fabric:ImageStore
-azure servicefabric application type register <%= appName %>
-azure servicefabric application create fabric:/<%= appName %>  <%= appTypeName %> 1.0.0
-
-
+sfctl application upload --path <%= appPackage %> --show-progress
+sfctl application provision --application-type-build-path <%= appPackage %>
+sfctl application create --app-name fabric:/<%= appName %> --app-type <%= appTypeName %> --app-version 1.0.0

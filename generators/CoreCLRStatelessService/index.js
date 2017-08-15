@@ -188,7 +188,7 @@ var ClassGenerator = generators.Base.extend({
       }
     );
 
-    if ( this.isAddNewService == false ) {
+     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
         this.templatePath('main/deploy/deploy.sh'),
         this.destinationPath(path.join(appPackage, 'install.sh')),
@@ -203,28 +203,6 @@ var ClassGenerator = generators.Base.extend({
       this.fs.copyTpl(
         this.templatePath('main/deploy/un-deploy.sh'),
         this.destinationPath(path.join(appPackage, 'uninstall.sh')),
-        {
-          appPackage: appPackage,
-          appName: appName,
-          appTypeName: appTypeName
-        } 
-      );
-    }
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('main/deploy/deploy-sfctl.sh'),
-        this.destinationPath(path.join(appPackage, 'install-sfctl.sh')),
-        {
-          appPackage: appPackage,
-          appName: appName,
-          appTypeName: appTypeName
-        } 
-      );
-    }
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('main/deploy/un-deploy-sfctl.sh'),
-        this.destinationPath(path.join(appPackage, 'uninstall-sfctl.sh')),
         {
           appPackage: appPackage,
           appName: appName,

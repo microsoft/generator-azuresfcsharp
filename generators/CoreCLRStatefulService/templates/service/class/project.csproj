@@ -12,6 +12,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.1.167-preview" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.0.167./-preview" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.0.167-preview" />
   </ItemGroup>
 </Project>

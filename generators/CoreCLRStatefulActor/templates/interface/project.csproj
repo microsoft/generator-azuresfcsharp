@@ -3,15 +3,15 @@
   <PropertyGroup>
     <Description><%= actorName %>.Interfaces Class Library</Description>
     <Authors><%= authorName %> </Authors>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName><%= actorName %>.Interfaces</AssemblyName>
     <PackageId><%= actorName %>.Interfaces</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <PackageTargetFallback>$(PackageTargetFallback)</PackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="0.10.0-*" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.0.167-preview" />
   </ItemGroup>
 
 </Project>

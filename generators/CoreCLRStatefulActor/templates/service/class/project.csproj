@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description><%= actorName %> Application</Description>
     <Authors><%= authorName %> </Authors>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName><%= actorName %>Service</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId><%= actorName %>Service</PackageId>
@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="0.10.0-*" />
-    <PackageReference Include="System.Fabric" Version="5.0.1-*" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="0.10.0-*" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.0.167-preview" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="6.1.167-preview" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.0.167-preview" />
   </ItemGroup>
 
 </Project>

@@ -84,7 +84,7 @@ var ClassGenerator = generators.Base.extend({
     var localStoreConfig = serviceName + 'LocalStoreConfig';
  
     var appPackagePath = this.isAddNewService == false ? path.join(this.props.projName, appPackage) :  appPackage;
-    var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : serviceProjName ;
+    var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : path.join(this.props.projName, serviceProjName) ;
     var interfaceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, interfaceProjName) : interfaceProjName;
     var testClientSrcPath = this.isAddNewService == false ? path.join(this.props.projName, testClientProjName) : testClientProjName;
     appPackagePath = appName;
@@ -311,8 +311,9 @@ var ClassGenerator = generators.Base.extend({
         \ndotnet publish $DIR/../'+serviceProject+' -o $DIR/../'+codePath+'\
         \ndotnet restore $DIR/../'+testProject+' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json \n\
         \ndotnet build $DIR/../'+testProject+' -v normal\
-        \ndotnet publish $DIR/../'+ testProject +' -o $DIR/../'+testCodePath+'\
-        ';
+        \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
+        '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
+        \ncd -';
         nodeFs.appendFile(path.join(appPackage, 'build.sh'), appendToSettings, function (err) {
          if(err) {
               return console.log(err);

@@ -75,7 +75,7 @@ var ClassGenerator = generators.Base.extend({
     var localStoreConfig = serviceName + 'LocalStoreConfig';
  
     var appPackagePath = this.isAddNewService == false ? path.join(this.props.projName, appPackage) :  appPackage;
-    var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : serviceProjName ;
+    var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : path.join(this.props.projName, serviceProjName) ;
     appPackagePath = appName;
 
     var serviceProject = path.join(appPackage , 'src' , serviceSrcPath , serviceProjName + '.csproj');
@@ -113,7 +113,7 @@ var ClassGenerator = generators.Base.extend({
           result['ApplicationManifest']['ServiceManifestImport'][result['ApplicationManifest']['ServiceManifestImport'].length] =
              {"ServiceManifestRef":[{"$":{"ServiceManifestName":servicePackage, "ServiceManifestVersion":"1.0.0"}}]}
           result['ApplicationManifest']['DefaultServices'][0]['Service'][result['ApplicationManifest']['DefaultServices'][0]['Service'].length] =
-             {"$":{"Name":serviceName},"StatelessService":[{"$":{"ServiceTypeName":serviceTypeName,"InstanceCount":"1"},"SingletonPartition":[""]}]};
+             {"$":{"Name":serviceName},"StatefulService":[{"$":{"ServiceTypeName":serviceTypeName,"InstanceCount":"1"},"SingletonPartition":[""]}]};
 
       var builder = new xml2js.Builder();
       var xml = builder.buildObject(result);
@@ -216,8 +216,9 @@ var ClassGenerator = generators.Base.extend({
         var appendToSettings  = '\n\
         \ndotnet restore $DIR/../' + serviceProject+ ' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json \
         \ndotnet build $DIR/../'+serviceProject+ ' -v normal\
-        \ndotnet publish $DIR/../'+serviceProject+' -o $DIR/../'+ codePath +'\
-        ';
+        \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
+        '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
+        \ncd -';
         nodeFs.appendFile(path.join(appPackage, 'build.sh'), appendToSettings, function (err) {
          if(err) {
               return console.log(err);

@@ -214,7 +214,7 @@ var ClassGenerator = generators.Base.extend({
     else {
         var nodeFs = require('fs');
         var appendToSettings  = '\n\
-        \ndotnet restore $DIR/../' + serviceProject+ ' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json \
+        \ndotnet restore $DIR/../' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
         \ndotnet build $DIR/../'+serviceProject+ ' -v normal\
         \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
         '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\

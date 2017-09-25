@@ -304,12 +304,12 @@ var ClassGenerator = generators.Base.extend({
     } else {
         var nodeFs = require('fs');
         var appendToSettings  = '\n\
-        \ndotnet restore $DIR/../'+ interfaceProject+ ' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json  \
+        \ndotnet restore $DIR/../'+ interfaceProject+ ' -s https://api.nuget.org/v3/index.json  \
         \ndotnet build $DIR/../'+interfaceProject+' -v normal\n \n \
-        \ndotnet restore $DIR/../'+serviceProject+' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json \n\
+        \ndotnet restore $DIR/../'+serviceProject+' -s https://api.nuget.org/v3/index.json \n\
         \ndotnet build $DIR/../'+serviceProject+' -v normal\
         \ndotnet publish $DIR/../'+serviceProject+' -o $DIR/../'+codePath+'\
-        \ndotnet restore $DIR/../'+testProject+' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json \n\
+        \ndotnet restore $DIR/../'+testProject+' -s https://api.nuget.org/v3/index.json \n\
         \ndotnet build $DIR/../'+testProject+' -v normal\
         \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
         '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\

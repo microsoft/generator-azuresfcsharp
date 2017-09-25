@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description><%= actorName %> TestClient Application</Description>
     <Authors><%= authorName %> </Authors>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName><%= actorName %>TestClient</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId><%= actorName %>TestClient</PackageId>
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="0.10.0-*" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.0.211-preview" />
   </ItemGroup>
 
 </Project>

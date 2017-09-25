@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Stateless Service Application</Description>
     <Authors><%= authorName %> </Authors>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName><%= serviceName %></AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId><%= serviceName %></PackageId>
@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="0.10.0-*" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.0.211-preview" />
   </ItemGroup>
 
 </Project>

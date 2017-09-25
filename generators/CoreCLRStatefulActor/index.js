@@ -84,7 +84,7 @@ var ClassGenerator = generators.Base.extend({
     var localStoreConfig = serviceName + 'LocalStoreConfig';
  
     var appPackagePath = this.isAddNewService == false ? path.join(this.props.projName, appPackage) :  appPackage;
-    var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : serviceProjName ;
+    var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : path.join(this.props.projName, serviceProjName) ;
     var interfaceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, interfaceProjName) : interfaceProjName;
     var testClientSrcPath = this.isAddNewService == false ? path.join(this.props.projName, testClientProjName) : testClientProjName;
     appPackagePath = appName;
@@ -304,15 +304,16 @@ var ClassGenerator = generators.Base.extend({
     } else {
         var nodeFs = require('fs');
         var appendToSettings  = '\n\
-        \ndotnet restore $DIR/../'+ interfaceProject+ ' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json  \
+        \ndotnet restore $DIR/../'+ interfaceProject+ ' -s https://api.nuget.org/v3/index.json  \
         \ndotnet build $DIR/../'+interfaceProject+' -v normal\n \n \
-        \ndotnet restore $DIR/../'+serviceProject+' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json \n\
+        \ndotnet restore $DIR/../'+serviceProject+' -s https://api.nuget.org/v3/index.json \n\
         \ndotnet build $DIR/../'+serviceProject+' -v normal\
         \ndotnet publish $DIR/../'+serviceProject+' -o $DIR/../'+codePath+'\
-        \ndotnet restore $DIR/../'+testProject+' -s /opt/microsoft/sdk/servicefabric/csharp/packages -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json \n\
+        \ndotnet restore $DIR/../'+testProject+' -s https://api.nuget.org/v3/index.json \n\
         \ndotnet build $DIR/../'+testProject+' -v normal\
-        \ndotnet publish $DIR/../'+ testProject +' -o $DIR/../'+testCodePath+'\
-        ';
+        \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
+        '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
+        \ncd -';
         nodeFs.appendFile(path.join(appPackage, 'build.sh'), appendToSettings, function (err) {
          if(err) {
               return console.log(err);

@@ -7,7 +7,7 @@ var ClassGenerator = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments);
     
-    this.desc('Generate Stateless Service application template');
+    this.desc('Generate Stateful Service application template');
     this.option('libPath', {
       type: String
       , required: true
@@ -41,9 +41,9 @@ var ClassGenerator = generators.Base.extend({
       this.dir = parts.join('/');
       this.serviceName = utility.capitalizeFirstLetter(name.trim());
       if (!this.packageName) {
-        this.packageName = "statelessservice";
-        this.serviceFQN = "statelessservice." + this.serviceFQN;
-        this.dir = this.dir + "/statelessservice";
+        this.packageName = "statefulervice";
+        this.serviceFQN = "statefulservice." + this.serviceFQN;
+        this.dir = this.dir + "/statefulservice";
       }
       done();
     }.bind(this));
@@ -113,7 +113,7 @@ var ClassGenerator = generators.Base.extend({
           result['ApplicationManifest']['ServiceManifestImport'][result['ApplicationManifest']['ServiceManifestImport'].length] =
              {"ServiceManifestRef":[{"$":{"ServiceManifestName":servicePackage, "ServiceManifestVersion":"1.0.0"}}]}
           result['ApplicationManifest']['DefaultServices'][0]['Service'][result['ApplicationManifest']['DefaultServices'][0]['Service'].length] =
-             {"$":{"Name":serviceName},"StatelessService":[{"$":{"ServiceTypeName":serviceTypeName,"InstanceCount":"1"},"SingletonPartition":[""]}]};
+             {"$":{"Name":serviceName},"StatefulService":[{"$":{"ServiceTypeName":serviceTypeName,"InstanceCount":"1"},"SingletonPartition":[""]}]};
 
       var builder = new xml2js.Builder();
       var xml = builder.buildObject(result);
@@ -166,16 +166,6 @@ var ClassGenerator = generators.Base.extend({
         appName: appName,
         serviceTypeName : serviceTypeName
       } 
-    );
-     this.fs.copyTpl(
-      this.templatePath('service/class/ServiceEventListener.cs'),
-      this.destinationPath(path.join(appPackage , 'src' , serviceSrcPath , 'ServiceEventListener.cs')),
-      {
-        serviceName: this.serviceName,
-        authorName: this.props.authorName,
-        appName: appName,
-        serviceTypeName : serviceTypeName
-      }
     );
      this.fs.copyTpl(
       this.templatePath('service/class/ServiceEventSource.cs'),

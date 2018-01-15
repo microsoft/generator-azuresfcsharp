@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.0.211-preview" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.0.450-preview" />
   </ItemGroup>
 
 </Project>

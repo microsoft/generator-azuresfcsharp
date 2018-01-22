@@ -301,7 +301,18 @@ var ClassGenerator = generators.Base.extend({
           
         } 
       );
-    } else {
+    }
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/common/dotnet-include.sh'),
+        this.destinationPath(path.join(appPackage, 'dotnet-include.sh')),
+        {
+          serviceProject: serviceProject,
+          codePath: codePath,
+        }
+      );
+    }
+    else {
         var nodeFs = require('fs');
         var appendToSettings  = '\n\
         \ndotnet restore $DIR/../'+ interfaceProject+ ' -s https://api.nuget.org/v3/index.json  \

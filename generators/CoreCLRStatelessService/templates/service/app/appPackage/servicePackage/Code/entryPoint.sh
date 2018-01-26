@@ -10,6 +10,6 @@ check_errs()
 
 DIR=`dirname $0`
 echo 0x3f > /proc/self/coredump_filter
-source ../../../../dotnet-install.sh
+source ../../../../dotnet-include.sh
 dotnet $DIR/<%= serviceProjName %>.dll $@
 check_errs $?

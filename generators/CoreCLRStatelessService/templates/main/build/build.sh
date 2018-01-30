@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR=`dirname $0`
-source ./dotnet-include.sh
+source $DIR/dotnet-include.sh
 
 dotnet restore $DIR/../<%= serviceProject %> -s https://api.nuget.org/v3/index.json
 dotnet build $DIR/../<%= serviceProject %> -v normal

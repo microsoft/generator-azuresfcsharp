@@ -205,10 +205,6 @@ var ClassGenerator = generators.Base.extend({
         } 
       );
     }
-    else{
-      var nodeFs = require('fs');
-
-    }
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
         this.templatePath('main/deploy/un-deploy.sh'),

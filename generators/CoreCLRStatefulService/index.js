@@ -133,6 +133,12 @@ var ClassGenerator = generators.Base.extend({
       } 
     );
     this.fs.copyTpl(
+      this.templatePath('main/common/dotnet-include.sh'),
+      this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
+      {
+      }
+    );
+    this.fs.copyTpl(
       this.templatePath('service/app/appPackage/servicePackage/Config/Settings.xml'),
       this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Config', 'Settings.xml')),
       {
@@ -211,16 +217,6 @@ var ClassGenerator = generators.Base.extend({
         } 
       );
     }
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('main/common/dotnet-include.sh'),
-        this.destinationPath(path.join(appPackage, 'dotnet-include.sh')),
-        {
-          serviceProject: serviceProject,
-          codePath: codePath,
-        }
-      );
-    }
     else {
         var nodeFs = require('fs');
         var appendToSettings  = '\n\
@@ -234,6 +230,14 @@ var ClassGenerator = generators.Base.extend({
               return console.log(err);
           }
       });
+    }
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/common/dotnet-include.sh'),
+        this.destinationPath(path.join(appPackage, 'dotnet-include.sh')),
+        {
+        }
+      );
     }
     this.template('service/app/appPackage/servicePackage/Config/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Config', '_readme.txt'));
     this.template('service/app/appPackage/servicePackage/Data/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Data', '_readme.txt'));

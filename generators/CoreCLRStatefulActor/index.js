@@ -147,6 +147,12 @@ var ClassGenerator = generators.Base.extend({
       } 
     );
     this.fs.copyTpl(
+      this.templatePath('main/common/dotnet-include.sh'),
+      this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
+      {
+      }
+    );
+    this.fs.copyTpl(
       this.templatePath('service/app/appPackage/servicePackage/Config/Settings.xml'),
       this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Config', 'Settings.xml')),
       {
@@ -266,6 +272,12 @@ var ClassGenerator = generators.Base.extend({
         testClientProjName: testClientProjName
       }
     );
+    this.fs.copyTpl(
+      this.templatePath('main/common/dotnet-include.sh'),
+      this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'dotnet-include.sh')),
+      {
+      }
+    );
      if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
         this.templatePath('main/deploy/deploy.sh'),
@@ -273,8 +285,7 @@ var ClassGenerator = generators.Base.extend({
         {
           appPackage: appPackage,
           appName: appName,
-          appTypeName: appTypeName,
-          serviceName: serviceName
+          appTypeName: appTypeName
         }
       );
     }
@@ -285,8 +296,7 @@ var ClassGenerator = generators.Base.extend({
         {
           appPackage: appPackage,
           appName: appName,
-          appTypeName: appTypeName,
-          serviceName: serviceName
+          appTypeName: appTypeName
         }
       );
     }
@@ -328,8 +338,6 @@ var ClassGenerator = generators.Base.extend({
         this.templatePath('main/common/dotnet-include.sh'),
         this.destinationPath(path.join(appPackage, 'dotnet-include.sh')),
         {
-          serviceProject: serviceProject,
-          codePath: codePath,
         }
       );
     }

@@ -1,5 +1,7 @@
 #!/bin/bash
 DIR=`dirname $0`
+source $DIR/dotnet-include.sh
+
 dotnet restore $DIR/../<%= interfaceProject %> -s https://api.nuget.org/v3/index.json
 dotnet build $DIR/../<%= interfaceProject %> -v normal
 

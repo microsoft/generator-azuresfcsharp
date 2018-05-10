@@ -7,5 +7,5 @@ dotnet build $DIR/../<%= serviceProject %> -v normal
 
 CURDIR=`pwd`
 cd `dirname $DIR/../<%= serviceProject %>`
-dotnet publish -o $CURDIR/../<%= codePath %>
+dotnet publish -o $CURDIR/<%= codePath %>
 cd -

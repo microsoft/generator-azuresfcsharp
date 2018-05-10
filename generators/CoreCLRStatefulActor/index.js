@@ -95,13 +95,31 @@ var ClassGenerator = generators.Base.extend({
     var codePath = path.join(appPackage , appPackagePath, servicePackage, 'Code');
     var testCodePath = path.join(appPackage , serviceProjName + 'TestClient' );
 
+    var is_Windows = (process.platform=='win32');
+    var is_Linux = (process.platform=='linux');
+    var is_mac = (process.platform=='darwin');
+
+    var extension1;
+    var extension2;
+    
+    if(is_Windows)
+    {
+      extension1 = '.ps1';
+      extension2 = '.cmd';
+    }
+    else if(is_Linux){
+      extension1 = '.sh';
+      extension2 = '.sh';
+    }
+
     this.fs.copyTpl(
       this.templatePath('service/app/appPackage/servicePackage/ServiceManifest.xml'),
       this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'ServiceManifest.xml')),
       {
         servicePackage: servicePackage,
         serviceTypeName: serviceTypeName,
-        serviceName: serviceName
+        serviceName: serviceName,
+        serviceExecutable: 'entryPoint'+extension2
       } 
     );
       if ( this.isAddNewService == false ) {
@@ -140,18 +158,20 @@ var ClassGenerator = generators.Base.extend({
     }
 
     this.fs.copyTpl(
-      this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint.sh'),
-      this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Code', 'entryPoint.sh')),
+      this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint'+extension2),
+      this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Code', 'entryPoint'+extension2)),
       {
         serviceProjName : serviceProjName
       } 
     );
-    this.fs.copyTpl(
-      this.templatePath('main/common/dotnet-include.sh'),
-      this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
-      {
-      }
-    );
+    if(is_Linux){
+     this.fs.copyTpl(
+        this.templatePath('main/common/dotnet-include.sh'),
+        this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
+        {
+        }
+      );
+    }
     this.fs.copyTpl(
       this.templatePath('service/app/appPackage/servicePackage/Config/Settings.xml'),
       this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Config', 'Settings.xml')),
@@ -266,22 +286,44 @@ var ClassGenerator = generators.Base.extend({
       }
     );
     this.fs.copyTpl(
-      this.templatePath('testclient/testscripts/testclient.sh'),
-      this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'testclient.sh')),
+      this.templatePath('testclient/testscripts/testclient'+extension2),
+      this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'testclient'+extension2)),
       {
         testClientProjName: testClientProjName
       }
     );
-    this.fs.copyTpl(
-      this.templatePath('main/common/dotnet-include.sh'),
-      this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'dotnet-include.sh')),
-      {
+    if(is_Linux){
+      this.fs.copyTpl(
+        this.templatePath('main/common/dotnet-include.sh'),
+        this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'dotnet-include.sh')),
+        {
+        }
+      );
+    }
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/deploy/deploy'+extension1),
+        this.destinationPath(path.join(appPackage, 'install'+extension1)),
+        {
+          appPackage: appPackage,
+          appName: appName,
+          appTypeName: appTypeName
+        }
+      );
+
+      if(is_Windows){
+        this.fs.copyTpl(
+          this.templatePath('main/deploy/predeploy'+ extension1),
+          this.destinationPath(path.join(appPackage, 'preinstall'+extension1)),
+          {
+          } 
+        );
       }
-    );
-     if ( this.isAddNewService == false ) {
+    }
+    if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/deploy.sh'),
-        this.destinationPath(path.join(appPackage, 'install.sh')),
+        this.templatePath('main/deploy/un-deploy'+extension1),
+        this.destinationPath(path.join(appPackage, 'uninstall'+extension1)),
         {
           appPackage: appPackage,
           appName: appName,
@@ -291,19 +333,8 @@ var ClassGenerator = generators.Base.extend({
     }
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/un-deploy.sh'),
-        this.destinationPath(path.join(appPackage, 'uninstall.sh')),
-        {
-          appPackage: appPackage,
-          appName: appName,
-          appTypeName: appTypeName
-        }
-      );
-    }
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('main/build/build.sh'),
-        this.destinationPath(path.join(appPackage, 'build.sh')),
+        this.templatePath('main/build/build'+extension2),
+        this.destinationPath(path.join(appPackage, 'build'+extension2)),
         {
           testProject: testProject,
           interfaceProject : interfaceProject ,
@@ -316,31 +347,38 @@ var ClassGenerator = generators.Base.extend({
     }
     else {
         var nodeFs = require('fs');
-        var appendToSettings  = '\n\
-        \ndotnet restore $DIR/../'+ interfaceProject+ ' -s https://api.nuget.org/v3/index.json  \
-        \ndotnet build $DIR/../'+interfaceProject+' -v normal\n \n \
-        \ndotnet restore $DIR/../'+serviceProject+' -s https://api.nuget.org/v3/index.json \n\
-        \ndotnet build $DIR/../'+serviceProject+' -v normal\
-        \ndotnet publish $DIR/../'+serviceProject+' -o $DIR/../'+codePath+'\
-        \ndotnet restore $DIR/../'+testProject+' -s https://api.nuget.org/v3/index.json \n\
-        \ndotnet build $DIR/../'+testProject+' -v normal\
-        \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
-        '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
-        \ncd -';
-        nodeFs.appendFile(path.join(appPackage, 'build.sh'), appendToSettings, function (err) {
+        var appendToSettings = null;
+        if(is_Linux){
+          var appendToSettings  = '\n\
+          \ndotnet restore $DIR/../' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
+          \ndotnet build $DIR/../'+serviceProject+ ' -v normal\
+          \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
+          '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
+          \ncd -';
+        }
+        else if(is_Windows){
+          var appendToSettings = '\n\
+          \ndotnet restore %~dp0\\..\\' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
+          \ndotnet build %~dp0\\..\\'+serviceProject+ ' -v normal\
+          \nfor %%F in ("'+serviceProject+'") do cd %%~dpF\
+          \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + appName + '\\' + servicePackage +'\\Code';
+        }
+        nodeFs.appendFile(path.join(appPackage, 'build'+extension2), appendToSettings, function (err) {
          if(err) {
               return console.log(err);
           }
       });
     }
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
+    if(is_Linux){
+      if ( this.isAddNewService == false ) {
+        this.fs.copyTpl(
         this.templatePath('main/common/dotnet-include.sh'),
         this.destinationPath(path.join(appPackage, 'dotnet-include.sh')),
         {
         }
       );
     }
+  }
     this.template('service/app/appPackage/servicePackage/Config/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Config', '_readme.txt'));
     this.template('service/app/appPackage/servicePackage/Data/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Data', '_readme.txt'));
   } 

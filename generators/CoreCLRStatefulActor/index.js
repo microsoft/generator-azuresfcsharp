@@ -119,7 +119,7 @@ var ClassGenerator = generators.Base.extend({
         servicePackage: servicePackage,
         serviceTypeName: serviceTypeName,
         serviceName: serviceName,
-        serviceExecutable: 'entryPoint'+extension2
+        serviceProjName: serviceProjName
       } 
     );
       if ( this.isAddNewService == false ) {

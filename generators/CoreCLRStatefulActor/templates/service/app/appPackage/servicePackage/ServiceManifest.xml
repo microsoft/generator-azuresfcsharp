@@ -6,9 +6,10 @@
    </ServiceTypes>
    <CodePackage Name="Code" Version="1.0.0">
       <EntryPoint>
-         <ExeHost>
-            <Program><%= serviceExecutable %></Program>
-         </ExeHost>
+        <ExeHost IsExternalExecutable="true">
+            <Program>dotnet</Program>
+            <Arguments><%= serviceProjName %>.dll</Arguments>
+        </ExeHost>
       </EntryPoint>
    </CodePackage>
    <ConfigPackage Name="Config" Version="1.0.0" />

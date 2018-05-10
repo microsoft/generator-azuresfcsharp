@@ -20,7 +20,7 @@ namespace <%= actorName %>
     /// </summary>
     internal class ActorEventListener : EventListener
     {
-        private const string filepath = "/tmp/";
+        private string directoryPath = Path.GetTempPath() + "/logs/";
         private string fileName = "<%= appName %>" + "_" + "<%= actorName %>" + "_" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + ".log";
 
         /// <summary>
@@ -36,7 +36,8 @@ namespace <%= actorName %>
                 message = string.Format(CultureInfo.InvariantCulture, eventData.Message, eventData.Payload.ToArray());
             }
 
-            using (StreamWriter writer = new StreamWriter( new FileStream(filepath + fileName, FileMode.Append)))
+            Directory.CreateDirectory(directoryPath);
+            using (StreamWriter writer = new StreamWriter( new FileStream(directoryPath + fileName, FileMode.Append)))
             {
                 // report all event information
                 writer.WriteLine(Write(eventData.Task.ToString(),

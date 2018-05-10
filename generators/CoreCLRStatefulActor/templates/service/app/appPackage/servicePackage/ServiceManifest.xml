@@ -7,7 +7,7 @@
    <CodePackage Name="Code" Version="1.0.0">
       <EntryPoint>
          <ExeHost>
-            <Program>entryPoint.sh</Program>
+            <Program><%= serviceExecutable %></Program>
          </ExeHost>
       </EntryPoint>
    </CodePackage>

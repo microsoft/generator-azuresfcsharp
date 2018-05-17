@@ -85,8 +85,8 @@ var ClassGenerator = generators.Base.extend({
  
     var appPackagePath = this.isAddNewService == false ? path.join(this.props.projName, appPackage) :  appPackage;
     var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : path.join(this.props.projName, serviceProjName) ;
-    var interfaceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, interfaceProjName) : interfaceProjName;
-    var testClientSrcPath = this.isAddNewService == false ? path.join(this.props.projName, testClientProjName) : testClientProjName;
+    var interfaceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, interfaceProjName) : path.join(this.props.projName, interfaceProjName);
+    var testClientSrcPath = this.isAddNewService == false ? path.join(this.props.projName, testClientProjName) : path.join(this.props.projName, testClientProjName);
     appPackagePath = appName;
 
     var testProject =  	path.join(appPackage , 'src' , testClientSrcPath , testClientProjName + '.csproj');

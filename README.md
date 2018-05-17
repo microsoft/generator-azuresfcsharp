@@ -64,6 +64,5 @@ Once you have figured out all the legalities above, you can follow the steps bel
 ## Debugging generator using vscode
 
 * Open the repository's root folder in VScode.
-* Run the command ```yo azuresfcsharp``` and get its process-id by running the following ```ps -aux | grep -i yo``` command.
-* Replace ```<process to which you want to attach>``` in file .vscode/launch.json with the appropriate process-id.
+* Run the command ```which yo``` and update the program's value in launch.json if it does not match with yours.
 * Press F5 to start debugging.

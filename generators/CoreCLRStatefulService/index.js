@@ -87,19 +87,21 @@ var ClassGenerator = generators.Base.extend({
 
     var extension1;
     var extension2;
-    
+    var serviceManifestFile;
     if(is_Windows)
     {
       extension1 = '.ps1';
       extension2 = '.cmd';
+      serviceManifestFile = 'ServiceManifest.xml';
     }
     else if(is_Linux){
       extension1 = '.sh';
       extension2 = '.sh';
+      serviceManifestFile = 'ServiceManifest_Linux.xml';
     }
 
     this.fs.copyTpl(
-      this.templatePath('service/app/appPackage/servicePackage/ServiceManifest.xml'),
+      this.templatePath('service/app/appPackage/servicePackage/'+serviceManifestFile),
       this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'ServiceManifest.xml')),
       {
         servicePackage: servicePackage,

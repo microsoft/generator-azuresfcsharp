@@ -352,18 +352,29 @@ var ClassGenerator = generators.Base.extend({
         var appendToSettings = null;
         if(is_Linux){
           var appendToSettings  = '\n\
-          \ndotnet restore $DIR/../' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
-          \ndotnet build $DIR/../'+serviceProject+ ' -v normal\
+          \ndotnet restore $DIR/../'+ interfaceProject+ ' -s https://api.nuget.org/v3/index.json  \
+          \ndotnet build $DIR/../'+interfaceProject+' -v normal\n \n \
+          \ndotnet restore $DIR/../'+serviceProject+' -s https://api.nuget.org/v3/index.json \n\
+          \ndotnet build $DIR/../'+serviceProject+' -v normal\
+          \ndotnet publish $DIR/../'+serviceProject+' -o $DIR/../'+codePath+'\
+          \ndotnet restore $DIR/../'+testProject+' -s https://api.nuget.org/v3/index.json \n\
+          \ndotnet build $DIR/../'+testProject+' -v normal\
           \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
-          '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
+          '\ndotnet publish -o ../../../../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
           \ncd -';
         }
         else if(is_Windows){
           var appendToSettings = '\n\
+          \ndotnet restore %~dp0\\..\\'+ interfaceProject+ ' -s https://api.nuget.org/v3/index.json  \
+          \ndotnet build %~dp0\\..\\'+interfaceProject+' -v normal\n \n \
           \ndotnet restore %~dp0\\..\\' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
           \ndotnet build %~dp0\\..\\'+serviceProject+ ' -v normal\
+          \ndotnet publish %~dp0\\..\\'+serviceProject+' -o %dp0\\..\\'+codePath+'\
+          \ndotnet restore %~dp0\\..\\'+testProject+' -s https://api.nuget.org/v3/index.json \n\
+          \ndotnet build %~dp0\\..\\'+testProject+' -v normal\
           \nfor %%F in ("'+serviceProject+'") do cd %%~dpF\
-          \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + appName + '\\' + servicePackage +'\\Code';
+          \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + appName + '\\' + servicePackage +'\\Code\
+          \ncd %~dp0\..';
         }
         nodeFs.appendFile(path.join(appPackage, 'build'+extension2), appendToSettings, function (err) {
          if(err) {

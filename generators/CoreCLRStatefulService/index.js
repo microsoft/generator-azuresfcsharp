@@ -256,7 +256,7 @@ var ClassGenerator = generators.Base.extend({
           \ndotnet restore $DIR/../' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
           \ndotnet build $DIR/../'+serviceProject+ ' -v normal\
           \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
-          '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
+          '\ndotnet publish -o ../../../../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
           \ncd -';
         }
         else if(is_Windows){

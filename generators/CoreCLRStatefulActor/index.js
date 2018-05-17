@@ -354,13 +354,13 @@ var ClassGenerator = generators.Base.extend({
           var appendToSettings  = '\n\
           \ndotnet restore $DIR/../'+ interfaceProject+ ' -s https://api.nuget.org/v3/index.json  \
           \ndotnet build $DIR/../'+interfaceProject+' -v normal\n \n \
-          \ndotnet restore $DIR/../'+serviceProject+' -s https://api.nuget.org/v3/index.json \n\
+          \ndotnet restore $DIR/../'+serviceProject+' -s https://api.nuget.org/v3/index.json \
           \ndotnet build $DIR/../'+serviceProject+' -v normal\
-          \ndotnet publish $DIR/../'+serviceProject+' -o $DIR/../'+codePath+'\
-          \ndotnet restore $DIR/../'+testProject+' -s https://api.nuget.org/v3/index.json \n\
+          \ndotnet publish $DIR/../'+serviceProject+' -o ../../../../'+codePath+'\n\n\
+          \ndotnet restore $DIR/../'+testProject+' -s https://api.nuget.org/v3/index.json \
           \ndotnet build $DIR/../'+testProject+' -v normal\
-          \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
-          '\ndotnet publish -o ../../../../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
+          \ncd ' + '`' + 'dirname $DIR/../'+testProject + '`' +
+          '\ndotnet publish -o ../../../../' +  appName + '/'+ serviceProjName +'TestClient\
           \ncd -';
         }
         else if(is_Windows){
@@ -369,11 +369,11 @@ var ClassGenerator = generators.Base.extend({
           \ndotnet build %~dp0\\..\\'+interfaceProject+' -v normal\n \n \
           \ndotnet restore %~dp0\\..\\' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
           \ndotnet build %~dp0\\..\\'+serviceProject+ ' -v normal\
-          \ndotnet publish %~dp0\\..\\'+serviceProject+' -o %dp0\\..\\'+codePath+'\
-          \ndotnet restore %~dp0\\..\\'+testProject+' -s https://api.nuget.org/v3/index.json \n\
+          \ndotnet publish %~dp0\\..\\'+serviceProject+' -o %dp0\\..\\'+codePath+'\n\n\
+          \ndotnet restore %~dp0\\..\\'+testProject+' -s https://api.nuget.org/v3/index.json \
           \ndotnet build %~dp0\\..\\'+testProject+' -v normal\
-          \nfor %%F in ("'+serviceProject+'") do cd %%~dpF\
-          \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + appName + '\\' + servicePackage +'\\Code\
+          \nfor %%F in ("'+testProject+'") do cd %%~dpF\
+          \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + serviceProjName +'TestClient\
           \ncd %~dp0\..';
         }
         nodeFs.appendFile(path.join(appPackage, 'build'+extension2), appendToSettings, function (err) {

@@ -94,11 +94,12 @@ var ClassGenerator = generators.Base.extend({
       buildScriptExtension = '.cmd';
       serviceManifestFile = 'ServiceManifest.xml';
     }
-    else if (is_Linux){
+    else {
       sdkScriptExtension = '.sh';
       buildScriptExtension = '.sh';
-      serviceManifestFile = 'ServiceManifest_Linux.xml';
     }
+    if (is_Linux) serviceManifestFile = 'ServiceManifest_Linux.xml';
+    if (is_mac) serviceManifestFile = 'ServiceManifest.xml';
 
     this.fs.copyTpl(
       this.templatePath('service/app/appPackage/servicePackage/'+serviceManifestFile),
@@ -243,7 +244,7 @@ var ClassGenerator = generators.Base.extend({
     else {
         var nodeFs = require('fs');
         var appendToSettings = null;
-        if (is_Linux) {
+        if (is_Linux || is_mac) {
           var appendToSettings  = '\n\
           \ndotnet restore $DIR/../' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
           \ndotnet build $DIR/../'+serviceProject+ ' -v normal\

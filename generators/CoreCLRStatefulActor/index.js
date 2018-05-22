@@ -84,9 +84,9 @@ var ClassGenerator = generators.Base.extend({
     var localStoreConfig = serviceName + 'LocalStoreConfig';
  
     var appPackagePath = this.isAddNewService == false ? path.join(this.props.projName, appPackage) :  appPackage;
-    var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : path.join(this.props.projName, serviceProjName) ;
-    var interfaceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, interfaceProjName) : path.join(this.props.projName, interfaceProjName);
-    var testClientSrcPath = this.isAddNewService == false ? path.join(this.props.projName, testClientProjName) : path.join(this.props.projName, testClientProjName);
+    var serviceSrcPath = path.join(this.props.projName, serviceProjName) ;
+    var interfaceSrcPath = path.join(this.props.projName, interfaceProjName);
+    var testClientSrcPath = path.join(this.props.projName, testClientProjName);
     appPackagePath = appName;
 
     var testProject =  	path.join(appPackage , 'src' , testClientSrcPath , testClientProjName + '.csproj');
@@ -95,22 +95,22 @@ var ClassGenerator = generators.Base.extend({
     var codePath = path.join(appPackage , appPackagePath, servicePackage, 'Code');
     var testCodePath = path.join(appPackage , serviceProjName + 'TestClient' );
 
-    var is_Windows = (process.platform=='win32');
-    var is_Linux = (process.platform=='linux');
-    var is_mac = (process.platform=='darwin');
+    var is_Windows = (process.platform == 'win32');
+    var is_Linux = (process.platform == 'linux');
+    var is_mac = (process.platform == 'darwin');
 
-    var extension1;
-    var extension2;
+    var sdkScriptExtension;
+    var buildScriptExtension;
     var serviceManifestFile;
-    if(is_Windows)
+    if (is_Windows)
     {
-      extension1 = '.ps1';
-      extension2 = '.cmd';
+      sdkScriptExtension = '.ps1';
+      buildScriptExtension = '.cmd';
       serviceManifestFile = 'ServiceManifest.xml';
     }
-    else if(is_Linux){
-      extension1 = '.sh';
-      extension2 = '.sh';
+    else if (is_Linux) {
+      sdkScriptExtension = '.sh';
+      buildScriptExtension = '.sh';
       serviceManifestFile = 'ServiceManifest_Linux.xml';
     }
 
@@ -159,20 +159,20 @@ var ClassGenerator = generators.Base.extend({
       });
     }
 
-    this.fs.copyTpl(
-      this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint'+extension2),
-      this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Code', 'entryPoint'+extension2)),
-      {
-        serviceProjName : serviceProjName
-      } 
-    );
-    if(is_Linux){
-     this.fs.copyTpl(
-        this.templatePath('main/common/dotnet-include.sh'),
-        this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
-        {
-        }
-      );
+    if (is_Linux) {
+      this.fs.copyTpl(
+          this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint.sh'),
+          this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Code', 'entryPoint.sh')),
+          {
+            serviceProjName : serviceProjName
+          } 
+        );
+      this.fs.copyTpl(
+          this.templatePath('main/common/dotnet-include.sh'),
+          this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
+          {
+          }
+        );
     }
     this.fs.copyTpl(
       this.templatePath('service/app/appPackage/servicePackage/Config/Settings.xml'),
@@ -288,13 +288,13 @@ var ClassGenerator = generators.Base.extend({
       }
     );
     this.fs.copyTpl(
-      this.templatePath('testclient/testscripts/testclient'+extension2),
-      this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'testclient'+extension2)),
+      this.templatePath('testclient/testscripts/testclient'+buildScriptExtension),
+      this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'testclient'+buildScriptExtension)),
       {
         testClientProjName: testClientProjName
       }
     );
-    if(is_Linux){
+    if (is_Linux) {
       this.fs.copyTpl(
         this.templatePath('main/common/dotnet-include.sh'),
         this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'dotnet-include.sh')),
@@ -304,28 +304,8 @@ var ClassGenerator = generators.Base.extend({
     }
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/deploy'+extension1),
-        this.destinationPath(path.join(appPackage, 'install'+extension1)),
-        {
-          appPackage: appPackage,
-          appName: appName,
-          appTypeName: appTypeName
-        }
-      );
-
-      if(is_Windows){
-        this.fs.copyTpl(
-          this.templatePath('main/deploy/predeploy'+ extension1),
-          this.destinationPath(path.join(appPackage, 'preinstall'+extension1)),
-          {
-          } 
-        );
-      }
-    }
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('main/deploy/un-deploy'+extension1),
-        this.destinationPath(path.join(appPackage, 'uninstall'+extension1)),
+        this.templatePath('main/deploy/deploy'+sdkScriptExtension),
+        this.destinationPath(path.join(appPackage, 'install'+sdkScriptExtension)),
         {
           appPackage: appPackage,
           appName: appName,
@@ -335,8 +315,19 @@ var ClassGenerator = generators.Base.extend({
     }
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/build/build'+extension2),
-        this.destinationPath(path.join(appPackage, 'build'+extension2)),
+        this.templatePath('main/deploy/un-deploy'+sdkScriptExtension),
+        this.destinationPath(path.join(appPackage, 'uninstall'+sdkScriptExtension)),
+        {
+          appPackage: appPackage,
+          appName: appName,
+          appTypeName: appTypeName
+        }
+      );
+    }
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/build/build'+buildScriptExtension),
+        this.destinationPath(path.join(appPackage, 'build'+buildScriptExtension)),
         {
           testProject: testProject,
           interfaceProject : interfaceProject ,
@@ -363,7 +354,7 @@ var ClassGenerator = generators.Base.extend({
           '\ndotnet publish -o ../../../../' +  appName + '/'+ serviceProjName +'TestClient\
           \ncd -';
         }
-        else if(is_Windows){
+        else if (is_Windows) {
           var appendToSettings = '\n\
           \ndotnet restore %~dp0\\..\\'+ interfaceProject+ ' -s https://api.nuget.org/v3/index.json  \
           \ndotnet build %~dp0\\..\\'+interfaceProject+' -v normal\n \n \
@@ -376,13 +367,13 @@ var ClassGenerator = generators.Base.extend({
           \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + serviceProjName +'TestClient\
           \ncd %~dp0\..';
         }
-        nodeFs.appendFile(path.join(appPackage, 'build'+extension2), appendToSettings, function (err) {
+        nodeFs.appendFile(path.join(appPackage, 'build' + buildScriptExtension), appendToSettings, function (err) {
          if(err) {
               return console.log(err);
           }
       });
     }
-    if(is_Linux){
+    if (is_Linux) {
       if ( this.isAddNewService == false ) {
         this.fs.copyTpl(
         this.templatePath('main/common/dotnet-include.sh'),

@@ -14,8 +14,7 @@
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
       <ExeHost IsExternalExecutable="true">
-        <Program>dotnet</Program>
-        <Arguments><%= serviceProjName %>.dll</Arguments>
+        <Program>entryPoint.sh</Program>
       </ExeHost>
     </EntryPoint>
   </CodePackage>

@@ -9,7 +9,7 @@ check_errs()
 }
 
 DIR=`dirname $0`
-export LD_LIBRARY_PATH=/opt/microsoft/servicefabric/bin/Fabric/Fabric.Code/
+export LD_LIBRARY_PATH=<%= fabricCodePath %>
 source $DIR/dotnet-include.sh
 dotnet $DIR/<%= testClientProjName %>.dll $@
 check_errs $?

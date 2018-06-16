@@ -75,22 +75,43 @@ var ClassGenerator = generators.Base.extend({
     var localStoreConfig = serviceName + 'LocalStoreConfig';
  
     var appPackagePath = this.isAddNewService == false ? path.join(this.props.projName, appPackage) :  appPackage;
-    var serviceSrcPath = this.isAddNewService == false ? path.join(this.props.projName, serviceProjName) : path.join(this.props.projName, serviceProjName) ;
+    var serviceSrcPath = path.join(this.props.projName, serviceProjName) ;
     appPackagePath = appName;
 
     var serviceProject = path.join(appPackage , 'src' , serviceSrcPath , serviceProjName + '.csproj');
     var codePath = path.join(appPackage , appPackagePath, servicePackage, 'Code');
 
+    var is_Windows = (process.platform == 'win32');
+    var is_Linux = (process.platform == 'linux');
+    var is_mac = (process.platform == 'darwin');
+
+    var sdkScriptExtension;
+    var buildScriptExtension;
+    var serviceManifestFile;
+    if (is_Windows)
+    {
+      sdkScriptExtension = '.ps1';
+      buildScriptExtension = '.cmd';
+      serviceManifestFile = 'ServiceManifest.xml';
+    }
+    else {
+      sdkScriptExtension = '.sh';
+      buildScriptExtension = '.sh';
+    }
+    if (is_Linux)  serviceManifestFile = 'ServiceManifest_Linux.xml';
+    if (is_mac)  serviceManifestFile = 'ServiceManifest.xml';
+
     this.fs.copyTpl(
-      this.templatePath('service/app/appPackage/servicePackage/ServiceManifest.xml'),
+      this.templatePath('service/app/appPackage/servicePackage/'+serviceManifestFile),
       this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'ServiceManifest.xml')),
       {
         servicePackage: servicePackage,
         serviceTypeName: serviceTypeName,
-        serviceName: serviceName
+        serviceName: serviceName,
+        serviceProjName: serviceProjName
       } 
     );
-      if ( this.isAddNewService == false ) {
+    if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
         this.templatePath('service/app/appPackage/ApplicationManifest.xml'),
         this.destinationPath(path.join(appPackage , appPackagePath, 'ApplicationManifest.xml')),
@@ -125,13 +146,89 @@ var ClassGenerator = generators.Base.extend({
         });
       });
     }
-    this.fs.copyTpl(
-      this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint.sh'),
-      this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Code', 'entryPoint.sh')),
-      {
-        serviceProjName : serviceProjName
-      } 
-    );
+
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/deploy/deploy'+sdkScriptExtension),
+        this.destinationPath(path.join(appPackage, 'install'+sdkScriptExtension)),
+        {
+          appPackage: appPackage,
+          appName: appName,
+          appTypeName: appTypeName
+        } 
+      );
+    }
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/deploy/un-deploy'+sdkScriptExtension),
+        this.destinationPath(path.join(appPackage, 'uninstall'+sdkScriptExtension)),
+        {
+          appPackage: appPackage,
+          appName: appName,
+          appTypeName: appTypeName
+        } 
+      );
+    }
+
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/build/build'+buildScriptExtension),
+        this.destinationPath(path.join(appPackage, 'build'+buildScriptExtension)),
+        {
+          serviceProject: serviceProject,
+          codePath: codePath,
+        
+        } 
+      );
+    }
+    else {
+        var nodeFs = require('fs');
+        var appendToSettings = null;
+        if (is_Linux || is_mac) {
+          var appendToSettings  = '\n\
+          \ndotnet restore $DIR/../' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
+          \ndotnet build $DIR/../'+serviceProject+ ' -v normal\
+          \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
+          '\ndotnet publish -o ../../../../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
+          \ncd -';
+        }
+        else if (is_Windows) {
+          var appendToSettings = '\n\
+          \ndotnet restore %~dp0\\..\\' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
+          \ndotnet build %~dp0\\..\\'+serviceProject+ ' -v normal\
+          \nfor %%F in ("'+serviceProject+'") do cd %%~dpF\
+          \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + appName + '\\' + servicePackage +'\\Code';
+        }
+        nodeFs.appendFile(path.join(appPackage, 'build'+buildScriptExtension), appendToSettings, function (err) {
+          if(err) {
+              return console.log(err);
+          }
+      });
+    }
+    if (is_Linux) {
+      this.fs.copyTpl(
+        this.templatePath('main/common/dotnet-include.sh'),
+        this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
+        {
+        }
+      );
+      if ( this.isAddNewService == false ) {
+        this.fs.copyTpl(
+          this.templatePath('main/common/dotnet-include.sh'),
+          this.destinationPath(path.join(appPackage, 'dotnet-include.sh')),
+          {
+          }
+        );
+      }
+      this.fs.copyTpl(
+        this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint.sh'),
+        this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Code', 'entryPoint.sh')),
+        {
+          serviceProjName : serviceProjName
+        } 
+      );
+    }
+
     this.fs.copyTpl(
       this.templatePath('service/app/appPackage/servicePackage/Config/Settings.xml'),
       this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Config', 'Settings.xml')),
@@ -157,7 +254,7 @@ var ClassGenerator = generators.Base.extend({
         authorName: this.props.authorName
       } 
     );
-     this.fs.copyTpl(
+    this.fs.copyTpl(
       this.templatePath('service/class/Program.cs'),
       this.destinationPath(path.join(appPackage , 'src' , serviceSrcPath , 'Program.cs')),
       {
@@ -177,7 +274,7 @@ var ClassGenerator = generators.Base.extend({
         serviceTypeName : serviceTypeName
       }
     );
-     this.fs.copyTpl(
+    this.fs.copyTpl(
       this.templatePath('service/class/ServiceEventSource.cs'),
       this.destinationPath(path.join(appPackage , 'src' , serviceSrcPath , 'ServiceEventSource.cs')),
       {
@@ -187,54 +284,7 @@ var ClassGenerator = generators.Base.extend({
         serviceTypeName : serviceTypeName
       }
     );
-
-     if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('main/deploy/deploy.sh'),
-        this.destinationPath(path.join(appPackage, 'install.sh')),
-        {
-          appPackage: appPackage,
-          appName: appName,
-          appTypeName: appTypeName
-        } 
-      );
-    }
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('main/deploy/un-deploy.sh'),
-        this.destinationPath(path.join(appPackage, 'uninstall.sh')),
-        {
-          appPackage: appPackage,
-          appName: appName,
-          appTypeName: appTypeName
-        } 
-      );
-    }
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('main/build/build.sh'),
-        this.destinationPath(path.join(appPackage, 'build.sh')),
-        {
-          serviceProject: serviceProject,
-          codePath: codePath,
-       
-        } 
-      );
-    }
-    else {
-        var nodeFs = require('fs');
-        var appendToSettings  = '\n\
-        \ndotnet restore $DIR/../' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
-        \ndotnet build $DIR/../'+serviceProject+ ' -v normal\
-        \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
-        '\ndotnet publish -o $CURDIR/../' +  appName + '/' + appName + '/' + servicePackage +'/Code\
-        \ncd -';
-        nodeFs.appendFile(path.join(appPackage, 'build.sh'), appendToSettings, function (err) {
-         if(err) {
-              return console.log(err);
-          }
-      });
-    }
+    
     this.template('service/app/appPackage/servicePackage/Config/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Config', '_readme.txt'));
     this.template('service/app/appPackage/servicePackage/Data/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Data', '_readme.txt'));
   } 

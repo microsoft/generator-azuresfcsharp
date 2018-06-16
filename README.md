@@ -61,3 +61,8 @@ Once you have figured out all the legalities above, you can follow the steps bel
 * Validate that changes are working as expected and not breaking anything regressively - following the steps mentioned in the [documentation](https://docs.microsoft.com/en-us/azure/service-fabric/service-fabric-create-your-first-linux-application-with-csharp) by creating, building and deploying the generated project on a Service Fabric cluster
 * Raise a pull request and share with us 
 
+## Debugging generator using vscode
+
+* Open the repository's root folder in VScode.
+* Run the command ```which yo``` and update the program's value in launch.json if it does not match with yours.
+* Press F5 to start debugging.

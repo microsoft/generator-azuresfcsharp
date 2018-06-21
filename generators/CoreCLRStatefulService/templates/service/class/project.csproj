@@ -8,6 +8,7 @@
     <AssemblyName><%= serviceName %></AssemblyName>
     <PackageId><%= serviceName %></PackageId>
     <PackageTargetFallback>$(PackageTargetFallback)</PackageTargetFallback>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

@@ -36,6 +36,7 @@ namespace <%= actorName %>
                 message = string.Format(CultureInfo.InvariantCulture, eventData.Message, eventData.Payload.ToArray());
             }
 
+            Directory.CreateDirectory(directoryPath);
             using (StreamWriter writer = new StreamWriter( new FileStream(Path.Combine(directoryPath, fileName), FileMode.Append)))
             {
                 // report all event information

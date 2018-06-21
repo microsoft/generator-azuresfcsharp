@@ -8,6 +8,7 @@
     <OutputType>Exe</OutputType>
     <PackageId><%= actorName %>Service</PackageId>
     <PackageTargetFallback>$(PackageTargetFallback)</PackageTargetFallback>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

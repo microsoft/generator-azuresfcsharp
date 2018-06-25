@@ -20,7 +20,7 @@ namespace <%= actorName %>
     /// </summary>
     internal class ActorEventListener : EventListener
     {
-        private string directoryPath = Path.GetTempPath() + "/logs/";
+        private string directoryPath = Path.Combine(Path.GetTempPath(), "logs");
         private string fileName = "<%= appName %>" + "_" + "<%= actorName %>" + "_" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + ".log";
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace <%= actorName %>
             }
 
             Directory.CreateDirectory(directoryPath);
-            using (StreamWriter writer = new StreamWriter( new FileStream(directoryPath + fileName, FileMode.Append)))
+            using (StreamWriter writer = new StreamWriter( new FileStream(Path.Combine(directoryPath, fileName), FileMode.Append)))
             {
                 // report all event information
                 writer.WriteLine(Write(eventData.Task.ToString(),

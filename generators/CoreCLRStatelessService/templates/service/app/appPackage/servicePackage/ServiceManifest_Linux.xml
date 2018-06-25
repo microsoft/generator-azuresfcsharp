@@ -13,7 +13,7 @@
   <!-- Code package is your service executable. -->
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
-      <ExeHost IsExternalExecutable="true">
+      <ExeHost>
         <Program>entryPoint.sh</Program>
       </ExeHost>
     </EntryPoint>

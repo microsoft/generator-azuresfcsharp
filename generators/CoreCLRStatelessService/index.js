@@ -169,6 +169,17 @@ var ClassGenerator = generators.Base.extend({
         } 
       );
     }
+    if ( this.isAddNewService == false) {
+      this.fs.copyTpl(
+        this.templatePath('main/deploy/upgrade'+sdkScriptExtension),
+        this.destinationPath(path.join(appPackage, 'upgrade'+sdkScriptExtension)),
+        {
+          appPackage: appPackage,
+          appName: appName,
+          appTypeName: appTypeName
+        }
+      );
+    }
 
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(

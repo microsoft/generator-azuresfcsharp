@@ -16,9 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< Updated upstream
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.3.162" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
+=======
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.3.617" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="6.4.617" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.3.617" />
+>>>>>>> Stashed changes
   </ItemGroup>
 
 </Project>

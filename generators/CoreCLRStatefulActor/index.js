@@ -373,7 +373,7 @@ var ClassGenerator = generators.Base.extend({
           \ndotnet build %~dp0\\..\\'+interfaceProject+' -v normal\n \n \
           \ndotnet restore %~dp0\\..\\' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
           \ndotnet build %~dp0\\..\\'+serviceProject+ ' -v normal\
-          \ndotnet publish %~dp0\\..\\'+serviceProject+' -o %dp0\\..\\'+codePath+'\n\n\
+          \ndotnet publish %~dp0\\..\\'+serviceProject+' -o %~dp0\\..\\'+codePath+'\n\n\
           \ndotnet restore %~dp0\\..\\'+testProject+' -s https://api.nuget.org/v3/index.json \
           \ndotnet build %~dp0\\..\\'+testProject+' -v normal\
           \nfor %%F in ("'+testProject+'") do cd %%~dpF\

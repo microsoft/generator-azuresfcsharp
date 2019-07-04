@@ -1,7 +1,16 @@
 'use strict';
-
+var fs=require('fs');
 var path   = require('path')
 , generators = require('yeoman-generator');
+var tst=path.join(process.cwd(),'vscode-config.json');
+/*var isVS=tst.isVS;*/
+const confpath='./vscode-config.js';
+if(fs.existsSync(confpath))
+{
+  isVS=1;
+}
+else
+isVS=0;
 
 var ClassGenerator = generators.Base.extend({
   constructor: function () {
@@ -88,11 +97,15 @@ var ClassGenerator = generators.Base.extend({
     var interfaceSrcPath = path.join(this.props.projName, interfaceProjName);
     var testClientSrcPath = path.join(this.props.projName, testClientProjName);
     appPackagePath = appName;
-
+    if(isVS)
+    {
+      var serviceProject = path.join(process.cwd(),this.actorName,this.actorName + '.csproj');
+      var codePath = path.join(process.cwd(),this.actorName ,'PackageRoot' , 'Code');
+    }
+   
+   
     var testProject =  	path.join(appPackage , 'src' , testClientSrcPath , testClientProjName + '.csproj');
     var interfaceProject = path.join(appPackage , 'src' , interfaceSrcPath , interfaceProjName + '.csproj');
-    var serviceProject = path.join(appPackage , 'src' , serviceSrcPath , serviceProjName + '.csproj');
-    var codePath = path.join(appPackage , appPackagePath, servicePackage, 'Code');
     var testCodePath = path.join(appPackage , serviceProjName + 'TestClient' );
 
     var is_Windows = (process.platform == 'win32');
@@ -115,73 +128,171 @@ var ClassGenerator = generators.Base.extend({
     if (is_Linux)  serviceManifestFile = 'ServiceManifest_Linux.xml';
     if (is_mac)    serviceManifestFile = 'ServiceManifest.xml';
 
-    this.fs.copyTpl(
-      this.templatePath('service/app/appPackage/servicePackage/'+serviceManifestFile),
-      this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'ServiceManifest.xml')),
-      {
-        servicePackage: servicePackage,
-        serviceTypeName: serviceTypeName,
-        serviceName: serviceName,
-        serviceProjName: serviceProjName
-      } 
-    );
-    if ( this.isAddNewService == false ) {
-      this.fs.copyTpl(
-        this.templatePath('service/app/appPackage/ApplicationManifest.xml'),
-        this.destinationPath(path.join(appPackage , appPackagePath, 'ApplicationManifest.xml')),
-        {
-          appTypeName: appTypeName,
-          servicePackage: servicePackage,
-          serviceName: serviceName,
-          serviceTypeName: serviceTypeName
-        } 
-      );
-    } else {
-      var fs = require('fs'); 
-      var xml2js = require('xml2js');
-      var parser = new xml2js.Parser();
-      fs.readFile(path.join(appPackage,appPackagePath, 'ApplicationManifest.xml'), function(err, data) {
-      parser.parseString(data, function (err, result) {
-          if (err) {
-              return console.log(err);
-          }
-          result['ApplicationManifest']['ServiceManifestImport'][result['ApplicationManifest']['ServiceManifestImport'].length] = 
-              {"ServiceManifestRef":[{"$":{"ServiceManifestName":servicePackage,"ServiceManifestVersion":"1.0.0"}}]}
-          result['ApplicationManifest']['DefaultServices'][0]['Service'][result['ApplicationManifest']['DefaultServices'][0]['Service'].length] = 
-              {"$":{"Name":serviceName},"StatefulService":[{"$":{"ServiceTypeName":serviceTypeName,"TargetReplicaSetSize":"3","MinReplicaSetSize":"2"},"UniformInt64Partition":[{"$":{"PartitionCount":"1","LowKey":"-9223372036854775808","HighKey":"9223372036854775807"}}]}]};
-      var builder = new xml2js.Builder();
-      var xml = builder.buildObject(result);
-          fs.writeFile(path.join(appPackage , appPackagePath, 'ApplicationManifest.xml'), xml, function(err) {
-            if(err) {
-                return console.log(err);
-            }
-          }); 
-        });
-      });
-    }
-
-    if (is_Linux) {
-      this.fs.copyTpl(
-          this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint.sh'),
-          this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Code', 'entryPoint.sh')),
+    if(isVS)
+    {
+        this.fs.copyTpl(
+          this.templatePath('service/app/appPackage/servicePackage/'+serviceManifestFile),
+          this.destinationPath(path.join(process.cwd(),serviceProjName,'PackageRoot','ServiceManifest.xml')),
           {
-            serviceProjName : serviceProjName
+            servicePackage: servicePackage,
+            serviceTypeName: serviceTypeName,
+            serviceName: serviceName,
+            serviceProjName: serviceProjName
           } 
         );
-      this.fs.copyTpl(
-          this.templatePath('main/common/dotnet-include.sh'),
-          this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
+        
+    }
+    else
+    {
+        this.fs.copyTpl(
+          this.templatePath('service/app/appPackage/servicePackage/'+serviceManifestFile),
+          this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'ServiceManifest.xml')),
           {
-          }
+            servicePackage: servicePackage,
+            serviceTypeName: serviceTypeName,
+            serviceName: serviceName,
+            serviceProjName: serviceProjName
+          } 
         );
     }
+    if(!isVS)
+    {
+    if ( this.isAddNewService == false ) {
+     this.fs.copyTpl(
+       this.templatePath('service/app/appPackage/ApplicationManifest.xml'),
+       this.destinationPath(path.join(appPackage , appPackagePath, 'ApplicationManifest.xml')),
+       {
+         appTypeName: appTypeName,
+         servicePackage: servicePackage,
+         serviceName: serviceName,
+         serviceTypeName: serviceTypeName
+       } 
+     );
+   } else {
+     var fs = require('fs'); 
+     var xml2js = require('xml2js');
+     var parser = new xml2js.Parser();
+     fs.readFile(path.join(process.cwd(),appPackage , appPackagePath, 'ApplicationManifest.xml'), function(err, data) {
+     parser.parseString(data, function (err, result) {
+         if (err) {
+             return console.log(err);
+         }
+         result['ApplicationManifest']['ServiceManifestImport'][result['ApplicationManifest']['ServiceManifestImport'].length] = 
+         {"ServiceManifestRef":[{"$":{"ServiceManifestName":servicePackage,"ServiceManifestVersion":"1.0.0"}}]}
+     result['ApplicationManifest']['DefaultServices'][0]['Service'][result['ApplicationManifest']['DefaultServices'][0]['Service'].length] = 
+         {"$":{"Name":serviceName},"StatefulService":[{"$":{"ServiceTypeName":serviceTypeName,"TargetReplicaSetSize":"3","MinReplicaSetSize":"2"},"UniformInt64Partition":[{"$":{"PartitionCount":"1","LowKey":"-9223372036854775808","HighKey":"9223372036854775807"}}]}]};
+
+     var builder = new xml2js.Builder();
+     var xml = builder.buildObject(result);
+     
+     
+     
+         fs.writeFile(path.join(process.cwd(),appPackage , appPackagePath, 'ApplicationManifest.xml'), xml, function(err) {
+           if(err) {
+               return console.log(err);
+           }
+         });
+        
+       });
+     });
+   }
+ }
+ else
+ {
+   if ( this.isAddNewService == false ) {
+     this.fs.copyTpl(
+       this.templatePath('service/app/appPackage/ApplicationManifest.xml'),
+       this.destinationPath(path.join(process.cwd() , appPackage,'ApplicationPackageRoot','ApplicationManifest.xml')),
+       {
+         appTypeName: appTypeName,
+         servicePackage: servicePackage,
+         serviceName: serviceName,
+         serviceTypeName: serviceTypeName
+       } 
+     );
+   }
+    else {
+     var fs = require('fs'); 
+     var xml2js = require('xml2js');
+     var parser = new xml2js.Parser();
+     fs.readFile(path.join(process.cwd(), appName,'ApplicationPackageRoot', 'ApplicationManifest.xml'), function(err, data) {
+       console.log(path.join(process.cwd(), appName,'ApplicationPackageRoot', 'ApplicationManifest.xml'));
+       console.log('updating manifest');
+       console.log(data);
+     parser.parseString(data, function (err, result) {
+         if (err) {
+             return console.log(err);
+         }
+         result['ApplicationManifest']['ServiceManifestImport'][result['ApplicationManifest']['ServiceManifestImport'].length] = 
+         {"ServiceManifestRef":[{"$":{"ServiceManifestName":servicePackage,"ServiceManifestVersion":"1.0.0"}}]}
+     result['ApplicationManifest']['DefaultServices'][0]['Service'][result['ApplicationManifest']['DefaultServices'][0]['Service'].length] = 
+         {"$":{"Name":serviceName},"StatefulService":[{"$":{"ServiceTypeName":serviceTypeName,"TargetReplicaSetSize":"3","MinReplicaSetSize":"2"},"UniformInt64Partition":[{"$":{"PartitionCount":"1","LowKey":"-9223372036854775808","HighKey":"9223372036854775807"}}]}]};
+
+     var builder = new xml2js.Builder();
+     var xml = builder.buildObject(result);
+     fs.writeFile(path.join(process.cwd(), appPackage,'ApplicationPackageRoot', 'ApplicationManifest.xml'), xml, function(err) {
+       if(err) {
+           return console.log(err);
+       }
+     }); 
+       });
+     });
+   }
+ }
+
+ if(isVS){
+  if (is_Linux){
     this.fs.copyTpl(
-      this.templatePath('service/app/appPackage/servicePackage/Config/Settings.xml'),
-      this.destinationPath(path.join(appPackage , appPackagePath, servicePackage, 'Config', 'Settings.xml')),
+      this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint.sh'),
+      this.destinationPath(path.join(process.cwd(),serviceProjName, 'Code', 'entryPoint.sh')),
       {
-        serviceName: serviceName
+        serviceProjName : serviceProjName
       } 
     );
+    this.fs.copyTpl(
+      this.templatePath('../../utilityscripts/main/common/dotnet-include.sh'),
+      this.destinationPath(path.join(process.cwd(),serviceProjName ,'PackageRoot' , 'Code', 'dotnet-include.sh')),
+      {
+      }
+    );
+  }
+  this.fs.copyTpl(
+    this.templatePath('service/app/appPackage/servicePackage/Config/Settings.xml'),
+    this.destinationPath(path.join(process.cwd(),serviceProjName ,'PackageRoot' ,'Config', 'Settings.xml')),
+    {
+      serviceName: serviceName
+    } 
+  );
+}
+else
+{
+  if (is_Linux){
+    this.fs.copyTpl(
+      this.templatePath('service/app/appPackage/servicePackage/Code/entryPoint.sh'),
+      this.destinationPath(path.join(process.cwd(),appPackage , appPackagePath, servicePackage, 'Code', 'entryPoint.sh')),
+      {
+        serviceProjName : serviceProjName
+      } 
+    );
+    this.fs.copyTpl(
+      this.templatePath('../../utilityscripts/main/common/dotnet-include.sh'),
+      this.destinationPath(path.join(process.cwd(),appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
+      {
+      }
+    );
+  }
+  this.fs.copyTpl(
+    this.templatePath('service/app/appPackage/servicePackage/Config/Settings.xml'),
+    this.destinationPath(path.join(process.cwd(),appPackage , appPackagePath, servicePackage, 'Config', 'Settings.xml')),
+    {
+      serviceName: serviceName
+    } 
+  );
+
+
+}
+  
+  if(!isVS){
     this.fs.copyTpl(
       this.templatePath('interface/ActorInterface.cs'),
       this.destinationPath(path.join(appPackage , 'src' , interfaceSrcPath ,  'I' +this.actorName + '.cs')),
@@ -249,6 +360,7 @@ var ClassGenerator = generators.Base.extend({
         appName: appName
       } 
     );
+    if(!isVS){
     this.fs.copyTpl(
       this.templatePath('testclient/class/project.csproj'),
       this.destinationPath(path.join(appPackage , 'src' , testClientSrcPath , testClientProjName + '.csproj')),
@@ -259,6 +371,7 @@ var ClassGenerator = generators.Base.extend({
         actorName: this.actorName
       } 
     );
+    
     this.fs.copyTpl(
       this.templatePath('testclient/class/Program.cs'),
       this.destinationPath(path.join(appPackage , 'src' , testClientSrcPath ,  'Program.cs')),
@@ -270,6 +383,86 @@ var ClassGenerator = generators.Base.extend({
         appName: appName
       } 
     );
+    }
+  }
+  else
+  {
+    this.fs.copyTpl(
+      this.templatePath('interface/ActorInterface.cs'),
+      this.destinationPath(path.join(process.cwd(), interfaceProjName ,  'I' +this.actorName + '.cs')),
+      {
+        actorInterfaceNamespace: this.actorName +'.Interfaces',
+        actorInterfaceName: 'I' +this.actorName ,
+        authorName: this.props.authorName
+      } 
+    );
+    this.fs.copyTpl(
+      this.templatePath('interface/project.csproj'),
+      this.destinationPath(path.join(process.cwd(), interfaceProjName , interfaceProjName + '.csproj')),
+      {
+        actorName: this.actorName,
+        authorName: this.props.authorName
+      } 
+    );
+    this.fs.copyTpl(
+      this.templatePath('service/class/ActorImpl.cs'),
+      this.destinationPath(path.join(process.cwd(), serviceName ,  this.actorName + '.cs')),
+      {
+        actorInterfaceNamespace: this.actorName +'.Interfaces',
+        actorInterfaceName: 'I' +this.actorName ,
+        serviceName: serviceName,
+        actorName: this.actorName,
+        appName: appName
+      } 
+    );
+    
+    this.fs.copyTpl(
+      this.templatePath('service/class/project.csproj'),
+      this.destinationPath(path.join(process.cwd(), serviceName, serviceProjName + '.csproj')),
+      {
+        actorInterfaceNamespace: this.actorName +'.Interfaces',
+        actorInterfaceName: 'I' +this.actorName ,
+        actorName: this.actorName,
+        authorName: this.props.authorName
+      } 
+    );
+     this.fs.copyTpl(
+      this.templatePath('service/class/Program.cs'),
+      this.destinationPath(path.join(process.cwd(), serviceName, 'Program.cs')),
+      {
+        actorName: this.actorName,
+        authorName: this.props.authorName,
+        appName: appName
+      } 
+    );
+   
+    }
+    if(!isVS){
+    this.fs.copyTpl(
+      this.templatePath('testclient/class/project.csproj'),
+      this.destinationPath(path.join(appPackage , 'src' , testClientSrcPath , testClientProjName + '.csproj')),
+      {
+        actorInterfaceNamespace: this.actorName +'.Interfaces',
+        actorInterfaceName: 'I' +this.actorName ,
+        authorName: this.props.authorName,
+        actorName: this.actorName
+      } 
+    );
+    
+    this.fs.copyTpl(
+      this.templatePath('testclient/class/Program.cs'),
+      this.destinationPath(path.join(appPackage , 'src' , testClientSrcPath ,  'Program.cs')),
+      {
+        actorInterfaceNamespace: this.actorName +'.Interfaces',
+        actorInterfaceName: 'I' + this.actorName ,
+        actorName: this.actorName,
+        serviceName: serviceName,
+        appName: appName
+      } 
+    );
+    }
+  
+    if(!isVS){
     this.fs.copyTpl(
       this.templatePath('service/class/ActorEventListener.cs'),
       this.destinationPath(path.join(appPackage , 'src' , serviceSrcPath , 'ActorEventListener.cs')),
@@ -288,6 +481,15 @@ var ClassGenerator = generators.Base.extend({
         appName: appName
       }
     );
+    }
+    
+    else
+    {
+    
+
+    }
+    if(!isVS)
+    {
     this.fs.copyTpl(
       this.templatePath('testclient/testscripts/testclient'+buildScriptExtension),
       this.destinationPath(path.join(appPackage , serviceProjName + 'TestClient' , 'testclient'+buildScriptExtension)),
@@ -304,6 +506,8 @@ var ClassGenerator = generators.Base.extend({
         }
       );
     }
+  }
+  if(!isVS){
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
         this.templatePath('main/deploy/deploy'+sdkScriptExtension),
@@ -337,6 +541,45 @@ var ClassGenerator = generators.Base.extend({
         }
       );
     }
+  }
+  else
+  {
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/deploy/deploy'+sdkScriptExtension),
+        this.destinationPath(path.join(process.cwd(), 'install'+sdkScriptExtension)),
+        {
+          appPackage: appPackage,
+          appName: appName,
+          appTypeName: appTypeName
+        }
+      );
+    }
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/deploy/un-deploy'+sdkScriptExtension),
+        this.destinationPath(path.join(process.cwd(), 'uninstall'+sdkScriptExtension)),
+        {
+          appPackage: appPackage,
+          appName: appName,
+          appTypeName: appTypeName
+        }
+      );
+    }
+    if ( this.isAddNewService == false) {
+      this.fs.copyTpl(
+        this.templatePath('main/deploy/upgrade'+sdkScriptExtension),
+        this.destinationPath(path.join(process.cwd(), 'upgrade'+sdkScriptExtension)),
+        {
+          appPackage: appPackage,
+          appName: appName,
+          appTypeName: appTypeName
+        }
+      );
+    }
+  }
+    if(!isVS)
+    {
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
         this.templatePath('main/build/build'+buildScriptExtension),
@@ -386,6 +629,71 @@ var ClassGenerator = generators.Base.extend({
           }
       });
     }
+  }
+  else
+  {
+    if ( this.isAddNewService == false ) {
+      this.fs.copyTpl(
+        this.templatePath('main/build/build'+buildScriptExtension),
+        this.destinationPath(path.join(process.cwd(), 'build'+buildScriptExtension)),
+        {
+          serviceProject: serviceProject,
+          codePath: codePath,
+        
+        } 
+      );
+    }
+    else {
+
+      var serviceName= this.serviceName;  
+      
+     
+     
+      var nodeFs = require('fs');
+      var appendToSettings = null;
+      if (is_Linux || is_mac) {
+        var appendToSettings  = '\n\
+        \ndotnet restore $DIR/../' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
+        \ndotnet build $DIR/../'+serviceProject+ ' -v normal\
+        \ncd ' + '`' + 'dirname $DIR/../'+serviceProject + '`' +
+        '\ndotnet publish -o ../../../../' +  appName + '/' + serviceProjName + '/' + 'PackageRoot'+'/Code\
+        \ncd -';
+      }
+      else if (is_Windows) {
+        var appendToSettings = '\n\
+        \ndotnet restore %~dp0\\..\\' + serviceProject+ ' -s https://api.nuget.org/v3/index.json \
+        \ndotnet build %~dp0\\..\\'+serviceProject+ ' -v normal\
+        \nfor %%F in ("../'+serviceProject+'") do cd %%~dpF\
+        \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + serviceProjName +'\\PackageRoot'+'\\Code';
+        
+      }
+      
+      
+      console.log(appendToSettings);
+      nodeFs.appendFileSync(path.join(process.cwd(), 'build'+buildScriptExtension), appendToSettings, function (err) {
+        if(err) {
+            return console.log(err);
+        }
+      
+    });
+    if(is_Windows){
+      var p1=path.join(process.cwd(),serviceProjName,'PackageRoot','*');
+      var p11=path.join(process.cwd(),appName,appName,servicePackage);
+     
+      var txt1='\n'+'xcopy'+' '+'/Y'+' '+p1+' '+p11 +' ' +'/s'+' '+'/i';
+     
+  
+      fs.appendFileSync(path.join(process.cwd(),'build'+buildScriptExtension),txt1,function(err){
+  if(err)
+  return console.log(err);
+  
+      })
+                    
+    }
+  
+    }
+     
+  }
     if (is_Linux) {
       if ( this.isAddNewService == false ) {
         this.fs.copyTpl(
@@ -396,9 +704,11 @@ var ClassGenerator = generators.Base.extend({
       );
     }
   }
+  if(!VS){
     this.template('service/app/appPackage/servicePackage/Config/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Config', '_readme.txt'));
     this.template('service/app/appPackage/servicePackage/Data/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Data', '_readme.txt'));
   } 
+}
 });
 
 module.exports = ClassGenerator;

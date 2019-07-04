@@ -13,4 +13,6 @@ module.exports = {
     uncapitalizeFirstLetter: function (input) {
         return input.charAt(0).toLowerCase() + input.slice(1);
     }
+   
+
 };

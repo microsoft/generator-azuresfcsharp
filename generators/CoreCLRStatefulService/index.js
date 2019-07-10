@@ -6,15 +6,16 @@ var fs = require('fs');
 var find = require('find');
 var isVS;
 var data = path.join(process.cwd(), 'vscode-config.json');
-if (data == undefined) {
-  isVS = 0;
-}
-else {
+
+if(fs.existsSync(data)) {
   var words = fs.readFileSync(data);
   var tst = JSON.parse(words);
   isVS = 1;
 }
-
+else
+{
+  isVS=0;
+}
 var ClassGenerator = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments);

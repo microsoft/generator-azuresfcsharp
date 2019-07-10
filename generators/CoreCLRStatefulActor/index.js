@@ -2,15 +2,18 @@
 var fs=require('fs');
 var path   = require('path')
 , generators = require('yeoman-generator');
-var tst=path.join(process.cwd(),'vscode-config.json');
-/*var isVS=tst.isVS;*/
-const confpath='./vscode-config.js';
-if(fs.existsSync(confpath))
-{
-  isVS=1;
+var isVS;
+var data = path.join(process.cwd(), 'vscode-config.json');
+
+if(fs.existsSync(data)) {
+  var words = fs.readFileSync(data);
+  var tst = JSON.parse(words);
+  isVS = 1;
 }
 else
-isVS=0;
+{
+  isVS=0;
+}
 
 var ClassGenerator = generators.Base.extend({
   constructor: function () {

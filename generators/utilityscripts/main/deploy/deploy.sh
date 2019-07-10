@@ -9,8 +9,8 @@ cd `dirname $0`
 path="./vscode-config.js"
 
 if test -f "$path"; then
-    AppPath = <%= appPackage %>/<%= appPackage %>;
-    ManifestSrcPath=<%= appPackage %>/ApplicationPackageRoot/ApplicationManifest.xml;
+    AppPath = <%= appPackage %>+'/'+<%= appPackage %>;
+    ManifestSrcPath=<%= appPackage %>+'/ApplicationPackageRoot/ApplicationManifest.xml';
     ManifestDstPath=$AppPath
     cp  ManifestSrcPath  ManifestDstPath
 fi

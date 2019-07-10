@@ -582,7 +582,7 @@ else
     {
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/build/build'+buildScriptExtension),
+        this.templatePath('../../utilityscripts/main/build/actorbuild'+buildScriptExtension),
         this.destinationPath(path.join(appPackage, 'build'+buildScriptExtension)),
         {
           testProject: testProject,

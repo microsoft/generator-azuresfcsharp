@@ -676,7 +676,7 @@ else
         }
       
     });
-    if(is_Windows){
+    
       var p1=path.join(process.cwd(),serviceProjName,'PackageRoot','*');
       var p11=path.join(process.cwd(),appName,appName,servicePackage);
      
@@ -689,7 +689,7 @@ else
   
       })
                     
-    }
+    
   
     }
      

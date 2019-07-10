@@ -510,7 +510,7 @@ else
   if(!isVS){
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/deploy'+sdkScriptExtension),
+        this.templatePath('../../utilityscripts/main/deploy/deploy'+sdkScriptExtension),
         this.destinationPath(path.join(appPackage, 'install'+sdkScriptExtension)),
         {
           appPackage: appPackage,
@@ -521,7 +521,7 @@ else
     }
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/un-deploy'+sdkScriptExtension),
+        this.templatePath('../../utilityscripts/main/deploy/un-deploy'+sdkScriptExtension),
         this.destinationPath(path.join(appPackage, 'uninstall'+sdkScriptExtension)),
         {
           appPackage: appPackage,
@@ -532,7 +532,7 @@ else
     }
     if ( this.isAddNewService == false) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/upgrade'+sdkScriptExtension),
+        this.templatePath('../../utilityscripts/main/deploy/upgrade'+sdkScriptExtension),
         this.destinationPath(path.join(appPackage, 'upgrade'+sdkScriptExtension)),
         {
           appPackage: appPackage,
@@ -546,7 +546,7 @@ else
   {
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/deploy'+sdkScriptExtension),
+        this.templatePath('../../utilityscripts/main/deploy/deploy'+sdkScriptExtension),
         this.destinationPath(path.join(process.cwd(), 'install'+sdkScriptExtension)),
         {
           appPackage: appPackage,
@@ -557,7 +557,7 @@ else
     }
     if ( this.isAddNewService == false ) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/un-deploy'+sdkScriptExtension),
+        this.templatePath('../../utilityscripts/main/deploy/un-deploy'+sdkScriptExtension),
         this.destinationPath(path.join(process.cwd(), 'uninstall'+sdkScriptExtension)),
         {
           appPackage: appPackage,
@@ -568,7 +568,7 @@ else
     }
     if ( this.isAddNewService == false) {
       this.fs.copyTpl(
-        this.templatePath('main/deploy/upgrade'+sdkScriptExtension),
+        this.templatePath('../../utilityscripts/main/deploy/upgrade'+sdkScriptExtension),
         this.destinationPath(path.join(process.cwd(), 'upgrade'+sdkScriptExtension)),
         {
           appPackage: appPackage,

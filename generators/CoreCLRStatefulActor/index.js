@@ -708,6 +708,70 @@ else
     this.template('service/app/appPackage/servicePackage/Config/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Config', '_readme.txt'));
     this.template('service/app/appPackage/servicePackage/Data/_readme.txt', path.join(appPackage , appPackagePath, servicePackage, 'Data', '_readme.txt'));
   } 
+  else{
+    console.log("in the update");
+    var fs = require('fs');
+    var xml2js = require('xml2js');
+    var convert = require('xml-js');
+
+
+    var parser = new xml2js.Parser();
+    var xmlBuilder = new xml2js.Builder();
+
+
+
+    var csprojpath = path.join('..', this.serviceName, this.serviceName + '.csproj');
+
+    console.log(csprojpath);
+    fs.readFile(path.join(process.cwd(), appName, appName + '.sfproj'), function (err, data) {
+      console.log(data);
+      var result = convert.xml2json(data, { compact: false, spaces: 4 });
+      console.log("in the parser");
+      console.log(result);
+      result = JSON.parse(result);
+      result["elements"][0]["elements"][5]["elements"][result["elements"][0]["elements"][5]["elements"].length] = {
+        "type": "element",
+        "name": "ProjectReference",
+        "attributes": {
+          "Include": csprojpath
+        }
+      };
+      console.log(result);
+      var options = { compact: false };
+      var xml = convert.json2xml(result, options);
+      console.log(xml);
+      fs.writeFile(path.join(process.cwd(), appName, appName + '.sfproj'), xml, function (err) {
+        if (err) {
+          return console.log(err);
+        }
+
+      });
+    });
+    var array = fs.readFileSync(path.join(process.cwd(), appName + '.sln')).toString().split("\n");
+    var guid = generateGuid();
+    var count = 0;
+    var i;
+    for (i in array) {
+
+      if (array[i].includes("EndProject")) {
+        count++;
+      }
+      if (count == 2) {
+        var serviceguid = array[i - 1].substring(array[i - 1].indexOf("(") + 1, array[i - 1].indexOf(")"));
+      }
+      if (count == tst.numofservices + 1) {
+        var appendline = 'Project' + '(' + serviceguid + ')' + ' ' + '=' + '"' + this.serviceName + '"' + ',' + ' ' + '"' + this.serviceName + '\\' + this.serviceName + '.csproj' + '"' + ',' + ' "' + '{' + guid + '}"' + '\n' + 'EndProject';
+        array[i] = array[i].concat("\n" + appendline + "\n");
+        var text = array.join('\n');
+        fs.writeFile(path.join(process.cwd(), appName + '.sln'), text, function (err) {
+          console.log("write success");
+        });
+        break;
+      }
+      console.log(count);
+    }
+
+  }
 }
 });
 

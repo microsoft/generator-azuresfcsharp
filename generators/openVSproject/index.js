@@ -39,16 +39,17 @@ var ClassGenerator = generators.Base.extend({
     }
     if (is_Linux) serviceManifestFile = 'ServiceManifest_Linux.xml';
     if (is_mac) serviceManifestFile = 'ServiceManifest.xml';
+    fs.writeFile(path.join(process.cwd(), 'build' + buildScriptExtension), '', function(){console.log('done')});
 
     if (noofservices) {
       var i;
-
-
+       
       for (i = 0; i < noofservices; i++) {
         var serviceProject = path.join(appPackage, tst.services[i].serviceProjName, tst.services[i].serviceProjName + '.csproj');
         var serviceProjName = tst.services[i].serviceProjName;
+        
         if (tst.services[i].interfaceprojpath == undefined) {
-
+         console.log("building");
 
           var servicePackage = tst.services[i].servicePackage;
 

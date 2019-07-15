@@ -1,26 +1,11 @@
 'use strict';
-
 var path = require('path')
   , generators = require('yeoman-generator');
 var fs = require('fs');
-
-
 var isVS;
-var data = path.join(process.cwd(), 'vscode-config.json');
-
-if(fs.existsSync(data)) {
-  var words = fs.readFileSync(data);
-  var tst = JSON.parse(words);
-  isVS = 1;
-}
-else
-{
-  isVS=0;
-}
 var ClassGenerator = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments);
-
     this.desc('Generate Stateless Service application template');
     this.option('libPath', {
       type: String
@@ -32,9 +17,12 @@ var ClassGenerator = generators.Base.extend({
     });
     this.libPath = this.options.libPath;
     this.isAddNewService = this.options.isAddNewService;
-
+    this.option('configfilename',{
+      type: String
+      , required: true
+    });
+    this.configfilename=this.options.configfilename;
   },
-
   prompting: function () {
     var done = this.async();
     var utility = require('../utility');
@@ -46,7 +34,6 @@ var ClassGenerator = generators.Base.extend({
         return input ? utility.validateFQN(input) : false;
       }
     }];
-
     this.prompt(prompts, function (input) {
       this.serviceFQN = input.serviceFQN;
       var parts = this.serviceFQN.split('.')
@@ -62,19 +49,26 @@ var ClassGenerator = generators.Base.extend({
       done();
     }.bind(this));
   },
-
   initializing: function () {
     this.props = this.config.getAll();
     this.config.defaults({
       author: '<your name>'
     });
   },
-
   writing: function () {
     var serviceProjName = this.serviceName;
-
+    var data = path.join(process.cwd(), this.configfilename);
+ var fs=require('fs');
+    if(fs.existsSync(data)) {
+      var words = fs.readFileSync(data);
+      var tst = JSON.parse(words);
+      isVS = 1;
+    }
+    else
+    {
+      isVS=0;
+    }
     if (!isVS) {
-
       var appPackage = this.props.projName;
       var servicePackage = this.serviceName + 'Pkg';
       var serviceName = this.serviceName;
@@ -87,38 +81,22 @@ var ClassGenerator = generators.Base.extend({
     }
     else {
       var appPackage = tst.appname;
-
       var appTypeName = tst.appname + 'Type';
-
       var appName = tst.appname;
-
       var servicePackage = this.serviceName + 'Pkg';
-
       var serviceName = this.serviceName;
-
       var serviceTypeName = this.serviceName + 'Type';
-
       var appPackagePath = appPackage;
-
       var serviceProjName = this.serviceName;
-
-
-
     }
-
-
     var serviceJarName = (this.serviceName).toLowerCase();
-
     var serviceMainClass = this.serviceName + 'Service';
     var endpoint = serviceName + 'Endpoint';
     var replicatorEndpoint = serviceName + 'ReplicatorEndpoint';
     var replicatorConfig = serviceName + 'ReplicatorConfig';
     var replicatorSecurityConfig = serviceName + 'ReplicatorSecurityConfig';
     var localStoreConfig = serviceName + 'LocalStoreConfig';
-
-
     appPackagePath = appName;
-
     if (isVS) {
       var serviceProject = path.join(appPackage, serviceProjName, serviceProjName + '.csproj');
       var codePath = path.join(process.cwd(), serviceProjName, 'PackageRoot', 'Code');
@@ -127,11 +105,9 @@ var ClassGenerator = generators.Base.extend({
       var serviceProject = path.join(appPackage, 'src', serviceSrcPath, serviceProjName + '.csproj');
       var codePath = path.join(appPackage, appPackagePath, servicePackage, 'Code');
     }
-
     var is_Windows = (process.platform == 'win32');
     var is_Linux = (process.platform == 'linux');
     var is_mac = (process.platform == 'darwin');
-
     var sdkScriptExtension;
     var buildScriptExtension;
     var serviceManifestFile;
@@ -146,8 +122,7 @@ var ClassGenerator = generators.Base.extend({
     }
     if (is_Linux) serviceManifestFile = 'ServiceManifest_Linux.xml';
     if (is_mac) serviceManifestFile = 'ServiceManifest.xml';
-
-    if (isVS) {
+   if (isVS) {
       this.fs.copyTpl(
         this.templatePath('service/app/appPackage/servicePackage/' + serviceManifestFile),
         this.destinationPath(path.join(process.cwd(), serviceProjName, 'PackageRoot', 'ServiceManifest.xml')),
@@ -158,8 +133,6 @@ var ClassGenerator = generators.Base.extend({
           serviceProjName: serviceProjName
         }
       );
-
-
     }
     else {
       this.fs.copyTpl(
@@ -201,14 +174,11 @@ var ClassGenerator = generators.Base.extend({
 
             var builder = new xml2js.Builder();
             var xml = builder.buildObject(result);
-
-
             fs.writeFile(path.join(appPackage, appPackagePath, 'ApplicationManifest.xml'), xml, function (err) {
               if (err) {
                 return console.log(err);
               }
             });
-
           });
         });
       }
@@ -231,7 +201,6 @@ var ClassGenerator = generators.Base.extend({
         var xml2js = require('xml2js');
         var parser = new xml2js.Parser();
         fs.readFile(path.join(process.cwd(), appName, 'ApplicationPackageRoot', 'ApplicationManifest.xml'), function (err, data) {
-
           parser.parseString(data, function (err, result) {
             if (err) {
               return console.log(err);
@@ -240,9 +209,8 @@ var ClassGenerator = generators.Base.extend({
               { "ServiceManifestRef": [{ "$": { "ServiceManifestName": servicePackage, "ServiceManifestVersion": "1.0.0" } }] }
             result['ApplicationManifest']['DefaultServices'][0]['Service'][result['ApplicationManifest']['DefaultServices'][0]['Service'].length] =
               { "$": { "Name": serviceName }, "StatelessService": [{ "$": { "ServiceTypeName": serviceTypeName, "InstanceCount": "1" }, "SingletonPartition": [""] }] };
-
-            var builder = new xml2js.Builder();
-            var xml = builder.buildObject(result);
+             var builder = new xml2js.Builder();
+             var xml = builder.buildObject(result);
             fs.writeFile(path.join(process.cwd(), appPackage, 'ApplicationPackageRoot', 'ApplicationManifest.xml'), xml, function (err) {
               if (err) {
                 return console.log(err);
@@ -299,8 +267,6 @@ var ClassGenerator = generators.Base.extend({
           serviceName: serviceName
         }
       );
-
-
     }
     if (this.isAddNewService == false) {
       this.fs.copyTpl(
@@ -335,7 +301,6 @@ var ClassGenerator = generators.Base.extend({
         }
       );
     }
-
     if (this.isAddNewService == false) {
       this.fs.copyTpl(
         this.templatePath('../../utilityscripts/main/build/build' + buildScriptExtension),
@@ -343,7 +308,6 @@ var ClassGenerator = generators.Base.extend({
         {
           serviceProject: serviceProject,
           codePath: codePath,
-
         }
       );
     }
@@ -366,22 +330,16 @@ var ClassGenerator = generators.Base.extend({
           \nfor %%F in ("'+ serviceProject + '") do cd %%~dpF\
           \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + appName + '\\' + servicePackage + '\\Code';
         }
-
         nodeFs.appendFile(path.join(appPackage, 'build' + buildScriptExtension), appendToSettings, function (err) {
           if (err) {
             return console.log(err);
           }
         });
-
       }
       else {
-
         var serviceProjName = this.serviceName;
         var serviceName = this.serviceName;
-
         var servicePackage = this.serviceName + 'Pkg';
-
-        
         var nodeFs = require('fs');
         var appendToSettings = null;
         if (is_Linux || is_mac) {
@@ -399,40 +357,21 @@ var ClassGenerator = generators.Base.extend({
       \nfor %%F in ("../'+ serviceProject + '") do cd %%~dpF\
       \ndotnet publish -o %~dp0\\..\\' + appName + '\\' + serviceProjName + '\\PackageRoot' + '\\Code\
       \ncd ..';
-
         }
-
-
-
         nodeFs.appendFileSync(path.join(process.cwd(), 'build' + buildScriptExtension), appendToSettings, function (err) {
           if (err) {
             return console.log(err);
           }
-
         });
-
-
-
         var p1 = path.join(process.cwd(), serviceProjName, 'PackageRoot', '*');
         var p11 = path.join(process.cwd(), appName, appName, servicePackage);
-
         var txt1 = '\n' + 'xcopy' + ' ' + '/Y' + ' ' + p1 + ' ' + p11 + ' ' + '/s' + ' ' + '/i';
-
-
         fs.appendFileSync(path.join(process.cwd(), 'build' + buildScriptExtension), txt1, function (err) {
           if (err)
             return console.log(err);
-
         })
-
-
-
       }
     }
-
-
-
-
     if (isVS) {
       this.fs.copyTpl(
         this.templatePath('service/class/ServiceImpl.cs'),
@@ -443,7 +382,6 @@ var ClassGenerator = generators.Base.extend({
           appName: appName
         }
       );
-
       this.fs.copyTpl(
         this.templatePath('service/class/project.csproj'),
         this.destinationPath(path.join(process.cwd(), serviceName, this.serviceName + '.csproj')),
@@ -543,10 +481,8 @@ var ClassGenerator = generators.Base.extend({
         i = Math.floor(Math.random() * 16).toString(16).toUpperCase();
         result = result + i;
       }
-
       return result;
     }
-
     if (!isVS) {
       this.template('service/app/appPackage/servicePackage/Config/_readme.txt', path.join(appPackage, appPackagePath, servicePackage, 'Config', '_readme.txt'));
       this.template('service/app/appPackage/servicePackage/Data/_readme.txt', path.join(appPackage, appPackagePath, servicePackage, 'Data', '_readme.txt'));
@@ -556,15 +492,9 @@ var ClassGenerator = generators.Base.extend({
       var fs = require('fs');
       var xml2js = require('xml2js');
       var convert = require('xml-js');
-
-
       var parser = new xml2js.Parser();
       var xmlBuilder = new xml2js.Builder();
-
-
-
       var csprojpath = path.join('..', this.serviceName, this.serviceName + '.csproj');
-
       console.log(csprojpath);
       fs.readFile(path.join(process.cwd(), appName, appName + '.sfproj'), function (err, data) {
         console.log(data);
@@ -587,7 +517,6 @@ var ClassGenerator = generators.Base.extend({
           if (err) {
             return console.log(err);
           }
-
         });
       });
       var array = fs.readFileSync(path.join(process.cwd(), appName + '.sln')).toString().split("\n");
@@ -595,7 +524,6 @@ var ClassGenerator = generators.Base.extend({
       var count = 0;
       var i;
       for (i in array) {
-
         if (array[i].includes("EndProject")) {
           count++;
         }
@@ -613,9 +541,7 @@ var ClassGenerator = generators.Base.extend({
         }
         console.log(count);
       }
-
     }
   }
 });
-
 module.exports = ClassGenerator;

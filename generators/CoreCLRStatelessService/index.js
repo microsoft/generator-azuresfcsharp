@@ -17,11 +17,11 @@ var ClassGenerator = generators.Base.extend({
     });
     this.libPath = this.options.libPath;
     this.isAddNewService = this.options.isAddNewService;
-    this.option('configfilename',{
+    this.option('configfilename', {
       type: String
       , required: true
     });
-    this.configfilename=this.options.configfilename;
+    this.configfilename = this.options.configfilename;
   },
   prompting: function () {
     var done = this.async();
@@ -58,15 +58,14 @@ var ClassGenerator = generators.Base.extend({
   writing: function () {
     var serviceProjName = this.serviceName;
     var data = path.join(process.cwd(), this.configfilename);
- var fs=require('fs');
-    if(fs.existsSync(data)) {
+    var fs = require('fs');
+    if (fs.existsSync(data)) {
       var words = fs.readFileSync(data);
       var tst = JSON.parse(words);
       isVS = 1;
     }
-    else
-    {
-      isVS=0;
+    else {
+      isVS = 0;
     }
     if (!isVS) {
       var appPackage = this.props.projName;
@@ -122,7 +121,7 @@ var ClassGenerator = generators.Base.extend({
     }
     if (is_Linux) serviceManifestFile = 'ServiceManifest_Linux.xml';
     if (is_mac) serviceManifestFile = 'ServiceManifest.xml';
-   if (isVS) {
+    if (isVS) {
       this.fs.copyTpl(
         this.templatePath('service/app/appPackage/servicePackage/' + serviceManifestFile),
         this.destinationPath(path.join(process.cwd(), serviceProjName, 'PackageRoot', 'ServiceManifest.xml')),
@@ -209,8 +208,8 @@ var ClassGenerator = generators.Base.extend({
               { "ServiceManifestRef": [{ "$": { "ServiceManifestName": servicePackage, "ServiceManifestVersion": "1.0.0" } }] }
             result['ApplicationManifest']['DefaultServices'][0]['Service'][result['ApplicationManifest']['DefaultServices'][0]['Service'].length] =
               { "$": { "Name": serviceName }, "StatelessService": [{ "$": { "ServiceTypeName": serviceTypeName, "InstanceCount": "1" }, "SingletonPartition": [""] }] };
-             var builder = new xml2js.Builder();
-             var xml = builder.buildObject(result);
+            var builder = new xml2js.Builder();
+            var xml = builder.buildObject(result);
             fs.writeFile(path.join(process.cwd(), appPackage, 'ApplicationPackageRoot', 'ApplicationManifest.xml'), xml, function (err) {
               if (err) {
                 return console.log(err);
@@ -343,7 +342,7 @@ var ClassGenerator = generators.Base.extend({
         var nodeFs = require('fs');
         var appendToSettings = null;
         if (is_Linux || is_mac) {
-        var appendToSettings = '\n\
+          var appendToSettings = '\n\
       \ndotnet restore $DIR/../' + serviceProject + ' -s https://api.nuget.org/v3/index.json \
       \ndotnet build $DIR/../'+ serviceProject + ' -v normal\
       \ncd ' + '`' + 'dirname $DIR/../' + serviceProject + '`' +
@@ -351,7 +350,7 @@ var ClassGenerator = generators.Base.extend({
       \ncd -';
         }
         else if (is_Windows) {
-        var appendToSettings = '\n\
+          var appendToSettings = '\n\
       \ndotnet restore %~dp0\\..\\' + serviceProject + ' -s https://api.nuget.org/v3/index.json \
       \ndotnet build %~dp0\\..\\'+ serviceProject + ' -v normal\
       \nfor %%F in ("../'+ serviceProject + '") do cd %%~dpF\
@@ -413,12 +412,12 @@ var ClassGenerator = generators.Base.extend({
       );
       this.fs.copyTpl(
         this.templatePath('service/class/ServiceEventListener.cs'),
-        this.destinationPath(path.join( process.cwd(), serviceName, 'ServiceEventListener.cs')),
+        this.destinationPath(path.join(process.cwd(), serviceName, 'ServiceEventListener.cs')),
         {
           serviceName: this.serviceName,
           authorName: this.props.authorName,
           appName: appName,
-          serviceTypeName : serviceTypeName
+          serviceTypeName: serviceTypeName
         }
       );
     }
@@ -488,31 +487,30 @@ var ClassGenerator = generators.Base.extend({
       this.template('service/app/appPackage/servicePackage/Data/_readme.txt', path.join(appPackage, appPackagePath, servicePackage, 'Data', '_readme.txt'));
     }
     else {
-      console.log("in the update");
       var fs = require('fs');
       var xml2js = require('xml2js');
       var convert = require('xml-js');
       var parser = new xml2js.Parser();
-      var xmlBuilder = new xml2js.Builder();
       var csprojpath = path.join('..', this.serviceName, this.serviceName + '.csproj');
-      console.log(csprojpath);
       fs.readFile(path.join(process.cwd(), appName, appName + '.sfproj'), function (err, data) {
-        console.log(data);
         var result = convert.xml2json(data, { compact: false, spaces: 4 });
-        console.log("in the parser");
-        console.log(result);
         result = JSON.parse(result);
-        result["elements"][0]["elements"][5]["elements"][result["elements"][0]["elements"][5]["elements"].length] = {
+        var l;
+        for (l = 0; l < result["elements"][0]["elements"].length; l++) {
+          if (result["elements"][0]["elements"][l]["name"] == "ItemGroup") {
+            if (result["elements"][0]["elements"][l]["elements"][0]["name"] == "ProjectReference")
+              break;
+          }
+        }
+        result["elements"][0]["elements"][l]["elements"][result["elements"][0]["elements"][l]["elements"].length] = {
           "type": "element",
           "name": "ProjectReference",
           "attributes": {
             "Include": csprojpath
           }
         };
-        console.log(result);
         var options = { compact: false };
         var xml = convert.json2xml(result, options);
-        console.log(xml);
         fs.writeFile(path.join(process.cwd(), appName, appName + '.sfproj'), xml, function (err) {
           if (err) {
             return console.log(err);

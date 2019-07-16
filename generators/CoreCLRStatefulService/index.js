@@ -483,7 +483,14 @@ var ClassGenerator = generators.Base.extend({
       fs.readFile(path.join(process.cwd(), appName, appName + '.sfproj'), function (err, data) {
         var result = convert.xml2json(data, { compact: false, spaces: 4 });
         result = JSON.parse(result);
-        result["elements"][0]["elements"][5]["elements"][result["elements"][0]["elements"][5]["elements"].length] = {
+        var l;
+        for (l = 0; l < result["elements"][0]["elements"].length; l++) {
+          if (result["elements"][0]["elements"][l]["name"] == "ItemGroup") {
+            if (result["elements"][0]["elements"][l]["elements"][0]["name"] == "ProjectReference")
+              break;
+          }
+        }
+        result["elements"][0]["elements"][l]["elements"][result["elements"][0]["elements"][l]["elements"].length] = {
           "type": "element",
           "name": "ProjectReference",
           "attributes": {

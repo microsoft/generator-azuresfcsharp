@@ -696,7 +696,14 @@ var ClassGenerator = generators.Base.extend({
             console.log("in the parser");
             console.log(result);
             result = JSON.parse(result);
-            result["elements"][0]["elements"][5]["elements"][result["elements"][0]["elements"][5]["elements"].length] = {
+            var l;
+            for (l = 0; l < result["elements"][0]["elements"].length; l++) {
+              if (result["elements"][0]["elements"][l]["name"] == "ItemGroup") {
+                if (result["elements"][0]["elements"][l]["elements"][0]["name"] == "ProjectReference")
+                  break;
+              }
+            }
+            result["elements"][0]["elements"][l]["elements"][result["elements"][0]["elements"][l]["elements"].length] = {
               "type": "element",
               "name": "ProjectReference",
               "attributes": {

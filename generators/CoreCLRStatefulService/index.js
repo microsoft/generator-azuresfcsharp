@@ -43,9 +43,9 @@ var ClassGenerator = generators.Base.extend({
       this.dir = parts.join('/');
       this.serviceName = utility.capitalizeFirstLetter(name.trim());
       if (!this.packageName) {
-        this.packageName = "statefulervice";
-        this.serviceFQN = "statefulservice." + this.serviceFQN;
-        this.dir = this.dir + "/statefulservice";
+      this.packageName = "statefulervice";
+      this.serviceFQN = "statefulservice." + this.serviceFQN;
+      this.dir = this.dir + "/statefulservice";
       }
       done();
     }.bind(this));
@@ -87,13 +87,13 @@ var ClassGenerator = generators.Base.extend({
       var serviceTypeName = this.serviceName + 'Type';
       var appPackagePath = this.isAddNewService == false ? path.join(tst.appName, appPackage) : appPackage;
     }
-    var serviceJarName = (this.serviceName).toLowerCase();
-    var serviceMainClass = this.serviceName + 'Service';
-    var endpoint = serviceName + 'Endpoint';
-    var replicatorEndpoint = serviceName + 'ReplicatorEndpoint';
-    var replicatorConfig = serviceName + 'ReplicatorConfig';
-    var replicatorSecurityConfig = serviceName + 'ReplicatorSecurityConfig';
-    var localStoreConfig = serviceName + 'LocalStoreConfig';
+      var serviceJarName = (this.serviceName).toLowerCase();
+      var serviceMainClass = this.serviceName + 'Service';
+      var endpoint = serviceName + 'Endpoint';
+      var replicatorEndpoint = serviceName + 'ReplicatorEndpoint';
+      var replicatorConfig = serviceName + 'ReplicatorConfig';
+      var replicatorSecurityConfig = serviceName + 'ReplicatorSecurityConfig';
+      var localStoreConfig = serviceName + 'LocalStoreConfig';
     appPackagePath = appName;
     if (isVS) {
       var serviceProject = path.join(process.cwd(), appPackage, serviceProjName, serviceProjName + '.csproj');
@@ -346,15 +346,15 @@ var ClassGenerator = generators.Base.extend({
       );
     }
     if (isVS) {
-      var fs = require('fs'),
+       var fs = require('fs'),
         xml2js = require('xml2js'),
         util = require('util');
-      var parser = new xml2js.Parser(),
+        var parser = new xml2js.Parser(),
         xmlBuilder = new xml2js.Builder();
-      var i = tst.numofservices;
-      var csprojpath = path.join('..\\', this.serviceName, '\\', this.serviceName + '.csproj');
-      var data = fs.readFile(path.join(process.cwd(), appName, appName + '.sfproj'));
-      parser.parseString(data, function (err, result) {
+        var i = tst.numofservices;
+        var csprojpath = path.join('..\\', this.serviceName, '\\', this.serviceName + '.csproj');
+        var data = fs.readFile(path.join(process.cwd(), appName, appName + '.sfproj'));
+        parser.parseString(data, function (err, result) {
         result["Project"]["ItemGroup"][3]["ProjectReference"].push(["include"] = csprojpath);
       });
     }
@@ -490,8 +490,8 @@ var ClassGenerator = generators.Base.extend({
             "Include": csprojpath
           }
         };
-        var options = { compact: false };
-        var xml = convert.json2xml(result, options);
+      var options = { compact: false };
+      var xml = convert.json2xml(result, options);
         fs.writeFile(path.join(process.cwd(), appName, appName + '.sfproj'), xml, function (err) {
           if (err) {
             return console.log(err);

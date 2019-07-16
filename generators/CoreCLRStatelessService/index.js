@@ -343,7 +343,7 @@ var ClassGenerator = generators.Base.extend({
         var nodeFs = require('fs');
         var appendToSettings = null;
         if (is_Linux || is_mac) {
-          var appendToSettings = '\n\
+        var appendToSettings = '\n\
       \ndotnet restore $DIR/../' + serviceProject + ' -s https://api.nuget.org/v3/index.json \
       \ndotnet build $DIR/../'+ serviceProject + ' -v normal\
       \ncd ' + '`' + 'dirname $DIR/../' + serviceProject + '`' +
@@ -351,7 +351,7 @@ var ClassGenerator = generators.Base.extend({
       \ncd -';
         }
         else if (is_Windows) {
-          var appendToSettings = '\n\
+        var appendToSettings = '\n\
       \ndotnet restore %~dp0\\..\\' + serviceProject + ' -s https://api.nuget.org/v3/index.json \
       \ndotnet build %~dp0\\..\\'+ serviceProject + ' -v normal\
       \nfor %%F in ("../'+ serviceProject + '") do cd %%~dpF\

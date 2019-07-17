@@ -2,7 +2,6 @@
 var path = require('path');
 var fs = require('fs');
 var generators = require('yeoman-generator');
-console.log('Initialising VS project for VScode');
 var ClassGenerator = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments);
@@ -37,7 +36,7 @@ var ClassGenerator = generators.Base.extend({
     }
     if (is_Linux) serviceManifestFile = 'ServiceManifest_Linux.xml';
     if (is_mac) serviceManifestFile = 'ServiceManifest.xml';
-    fs.writeFile(path.join(process.cwd(), 'build' + buildScriptExtension), '', function () {console.log('done') });
+    fs.writeFile(path.join(process.cwd(), 'build' + buildScriptExtension), '', function () { });
     if (noofservices) {
       var i;
       for (i = 0; i < noofservices; i++) {

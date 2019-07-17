@@ -423,9 +423,9 @@ var ClassGenerator = generators.Base.extend({
       var serviceTypeName = this.actorName + 'Type';
       var appName = tst.appname;
       var appTypeName = appName + 'Type';
-      var interfaceProject = path.join(process.cwd(), interfaceProjName, interfaceProjName + '.csproj');
-      var serviceProject = path.join(process.cwd(), serviceProjName, serviceProjName + '.csproj');
-      var codePath = path.join(process.cwd(), serviceProjName, "PackageRoot", "Code");
+      var interfaceProject = path.join('..',interfaceProjName, interfaceProjName + '.csproj');
+      var serviceProject = path.join(appName,serviceProjName, serviceProjName + '.csproj');
+      var codePath = path.join(appName,serviceProjName, "PackageRoot", "Code");
       var is_Windows = (process.platform == 'win32');
       var is_Linux = (process.platform == 'linux');
       var is_mac = (process.platform == 'darwin');
@@ -645,26 +645,29 @@ var ClassGenerator = generators.Base.extend({
         var nodeFs = require('fs');
         var appendToSettings = null;
         if (is_Linux || is_mac) {
-          var appendToSettings = '\n\
-        \ndotnet restore $DIR/../'+ interfaceProject + ' -s https://api.nuget.org/v3/index.json  \
-        \ndotnet build $DIR/../'+ interfaceProject + ' -v normal\n \n \
-        \ndotnet restore $DIR/../'+ serviceProject + ' -s https://api.nuget.org/v3/index.json \
-        \ndotnet build $DIR/../'+ serviceProject + ' -v normal\
-        \ndotnet publish $DIR/../'+ serviceProject + ' -o ../../../../' + codePath + '\n'
+          var appendToSettings =  '\n\
+          \ndotnet restore $DIR/../'+ interfaceProject + ' -s https://api.nuget.org/v3/index.json  \
+          \ndotnet build $DIR/../'+ interfaceProject + ' -v normal\n \
+          \ndotnet restore $DIR/../'+ serviceProject + ' -s https://api.nuget.org/v3/index.json \
+          \ndotnet build $DIR/../'+ serviceProject + ' -v normal\
+          \ndotnet publish $DIR/../'+ serviceProject + ' -o ../../../../' + codePath + '\n\
+          \ncd -';
         }
         else if (is_Windows) {
-          var appendToSettings = '\n\
-        \ndotnet restore %~dp0\\..\\'+ interfaceProject + ' -s https://api.nuget.org/v3/index.json  \
-        \ndotnet build %~dp0\\..\\'+ interfaceProject + ' -v normal\n \n \
-        \ndotnet restore %~dp0\\..\\' + serviceProject + ' -s https://api.nuget.org/v3/index.json \
-        \ndotnet build %~dp0\\..\\'+ serviceProject + ' -v normal\
-        \ndotnet publish %~dp0\\..\\'+ serviceProject + ' -o %dp0\\..\\' + codePath + '\n'
-
+          var appendToSettings = '\ndotnet restore %~dp0\\..\\' + interfaceProject + '-s https://api.nuget.org/v3/index.json\
+          \ndotnet build %~dp0\\..\\' + interfaceProject + ' -v normal\
+          \ndotnet restore %~dp0\\..\\'+ serviceProject + ' -s https://api.nuget.org/v3/index.json\
+          \ndotnet build %~dp0\\..\\'+ serviceProject + ' -v normal\
+          \nfor %%F in ("%~dp0\\..\\'+ serviceProject + '") do cd %%~dpF\
+          \ndotnet publish -o %~dp0\\..\\'+ codePath + '\
+          \ncd %~dp0\..';
         }
-        nodeFs.appendFile(path.join(process.cwd(), 'build' + buildScriptExtension), appendToSettings, function (err) {
+        nodeFs.appendFileSync(path.join(process.cwd(), 'build' + buildScriptExtension), appendToSettings, function (err) {
           if (err) {
             return console.log(err);
           }
+        });
+        
           var p1 = path.join(process.cwd(), serviceProjName, 'PackageRoot', '*');
           var p11 = path.join(process.cwd(), appName, appName, servicePackage);
           var txt1 = '\n' + 'xcopy' + ' ' + '/Y' + ' ' + p1 + ' ' + p11 + ' ' + '/s' + ' ' + '/i';
@@ -672,6 +675,8 @@ var ClassGenerator = generators.Base.extend({
             if (err)
               return console.log(err);
           })
+      
+      }
           function generateGuid() {
             var result, i, j;
             result = '';
@@ -689,12 +694,8 @@ var ClassGenerator = generators.Base.extend({
           var parser = new xml2js.Parser();
           var xmlBuilder = new xml2js.Builder();
           var csprojpath = path.join('..', this.actorName, this.actorName + '.csproj');
-          console.log(csprojpath);
           fs.readFile(path.join(process.cwd(), appName, appName + '.sfproj'), function (err, data) {
-            console.log(data);
             var result = convert.xml2json(data, { compact: false, spaces: 4 });
-            console.log("in the parser");
-            console.log(result);
             result = JSON.parse(result);
             var l;
             for (l = 0; l < result["elements"][0]["elements"].length; l++) {
@@ -736,16 +737,12 @@ var ClassGenerator = generators.Base.extend({
               array[i] = array[i].concat("\n" + appendline + "\n");
               var text = array.join('\n');
               fs.writeFile(path.join(process.cwd(), appName + '.sln'), text, function (err) {
-                console.log("write success");
               });
               break;
             }
-            console.log(count);
           }
-        });
+        }
       }
-    }
-  }
 });
 
 module.exports = ClassGenerator;

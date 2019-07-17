@@ -533,11 +533,12 @@ var ClassGenerator = generators.Base.extend({
           array[i] = array[i].concat("\n" + appendline + "\n");
           var text = array.join('\n');
           fs.writeFile(path.join(process.cwd(), appName + '.sln'), text, function (err) {
-            console.log("write success");
+            if(err){
+              console.log(err);
+            }
           });
           break;
         }
-        console.log(count);
       }
     }
   }

@@ -6,6 +6,14 @@ uninstall () {
 }
 
 cd `dirname $0`
+path="<%= VScodeConfig%>"
+
+if test -f "$path"; then
+    AppPath = <%= appPackage %>+'/'+<%= appPackage %>;
+    ManifestSrcPath=<%= appPackage %>+'/ApplicationPackageRoot/ApplicationManifest.xml';
+    ManifestDstPath=$AppPath
+    cp  ManifestSrcPath  ManifestDstPath
+fi
 sfctl application upload --path <%= appPackage %> --show-progress
 if [ $? -ne 0 ]; then
   uninstall

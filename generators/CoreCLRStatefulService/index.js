@@ -365,7 +365,8 @@ var ClassGenerator = generators.Base.extend({
         {
           appPackage: appPackage,
           appName: appName,
-          appTypeName: appTypeName
+          appTypeName: appTypeName,
+          VScodeConfig:"./"+this.configfilename
         }
       );
     }

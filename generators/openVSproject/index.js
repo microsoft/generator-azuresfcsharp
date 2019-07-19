@@ -140,7 +140,7 @@ var ClassGenerator = generators.Base.extend({
           appPackage: appPackage,
           appName: appName,
           appTypeName: appTypeName,
-
+          VScodeConfig:"./"+this.configfilename
         }
       );
       this.fs.copyTpl(

@@ -185,7 +185,7 @@ var ClassGenerator = generators.Base.extend({
           }
         );
         this.fs.copyTpl(
-          this.templatePath('main/common/dotnet-include.sh'),
+          this.templatePath('../../utilityscripts/main/common/dotnet-include.sh'),
           this.destinationPath(path.join(appPackage, appPackagePath, servicePackage, 'Code', 'dotnet-include.sh')),
           {
           }
@@ -314,7 +314,7 @@ var ClassGenerator = generators.Base.extend({
       );
       if (is_Linux) {
         this.fs.copyTpl(
-          this.templatePath('main/common/dotnet-include.sh'),
+          this.templatePath('../../utilityscripts/main/common/dotnet-include.sh'),
           this.destinationPath(path.join(appPackage, serviceProjName + 'TestClient', 'dotnet-include.sh')),
           {
           }
@@ -322,18 +322,19 @@ var ClassGenerator = generators.Base.extend({
       }
       if (this.isAddNewService == false) {
         this.fs.copyTpl(
-          this.templatePath('main/deploy/deploy' + sdkScriptExtension),
+          this.templatePath('../../utilityscripts/main/deploy/deploy' + sdkScriptExtension),
           this.destinationPath(path.join(appPackage, 'install' + sdkScriptExtension)),
           {
             appPackage: appPackage,
             appName: appName,
-            appTypeName: appTypeName
+            appTypeName: appTypeName,
+            VScodeConfig:"./"+this.configfilename
           }
         );
       }
       if (this.isAddNewService == false) {
         this.fs.copyTpl(
-          this.templatePath('main/deploy/un-deploy' + sdkScriptExtension),
+          this.templatePath('../../utilityscripts/main/deploy/un-deploy' + sdkScriptExtension),
           this.destinationPath(path.join(appPackage, 'uninstall' + sdkScriptExtension)),
           {
             appPackage: appPackage,
@@ -344,7 +345,7 @@ var ClassGenerator = generators.Base.extend({
       }
       if (this.isAddNewService == false) {
         this.fs.copyTpl(
-          this.templatePath('main/deploy/upgrade' + sdkScriptExtension),
+          this.templatePath('../../utilityscripts/main/deploy/upgrade' + sdkScriptExtension),
           this.destinationPath(path.join(appPackage, 'upgrade' + sdkScriptExtension)),
           {
             appPackage: appPackage,
@@ -355,7 +356,7 @@ var ClassGenerator = generators.Base.extend({
       }
       if (this.isAddNewService == false) {
         this.fs.copyTpl(
-          this.templatePath('main/build/build' + buildScriptExtension),
+          this.templatePath('../../utilityscripts/main/build/build' + buildScriptExtension),
           this.destinationPath(path.join(appPackage, 'build' + buildScriptExtension)),
           {
             testProject: testProject,
@@ -405,7 +406,7 @@ var ClassGenerator = generators.Base.extend({
       if (is_Linux) {
         if (this.isAddNewService == false) {
           this.fs.copyTpl(
-            this.templatePath('main/common/dotnet-include.sh'),
+            this.templatePath('../../utiltiyscripts/main/common/dotnet-include.sh'),
             this.destinationPath(path.join(appPackage, 'dotnet-include.sh')),
             {
             }
@@ -497,7 +498,7 @@ var ClassGenerator = generators.Base.extend({
           }
         );
         this.fs.copyTpl(
-          this.templatePath('main/common/dotnet-include.sh'),
+          this.templatePath('../../utilityscripts/main/common/dotnet-include.sh'),
           this.destinationPath(path.join(process.cwd(), serviceProjName, "PackageRoot", 'Code', 'dotnet-include.sh')),
           {
           }
@@ -597,18 +598,19 @@ var ClassGenerator = generators.Base.extend({
       );
       if (this.isAddNewService == false) {
         this.fs.copyTpl(
-          this.templatePath('main/deploy/deploy' + sdkScriptExtension),
+          this.templatePath('../../utilityscripts/main/deploy/deploy' + sdkScriptExtension),
           this.destinationPath(path.join(process.cwd(), 'install' + sdkScriptExtension)),
           {
             appPackage: appPackage,
             appName: appName,
-            appTypeName: appTypeName
+            appTypeName: appTypeName,
+            VScodeConfig:"./"+this.configfilename
           }
         );
       }
       if (this.isAddNewService == false) {
         this.fs.copyTpl(
-          this.templatePath('main/deploy/un-deploy' + sdkScriptExtension),
+          this.templatePath('../../utilityscripts/main/deploy/un-deploy' + sdkScriptExtension),
           this.destinationPath(path.join(process.cwd(), 'uninstall' + sdkScriptExtension)),
           {
             appPackage: appPackage,
@@ -619,7 +621,7 @@ var ClassGenerator = generators.Base.extend({
       }
       if (this.isAddNewService == false) {
         this.fs.copyTpl(
-          this.templatePath('main/deploy/upgrade' + sdkScriptExtension),
+          this.templatePath('../../utilityscripts/main/deploy/upgrade' + sdkScriptExtension),
           this.destinationPath(path.join(process.cwd(), 'upgrade' + sdkScriptExtension)),
           {
             appPackage: appPackage,
@@ -630,7 +632,7 @@ var ClassGenerator = generators.Base.extend({
       }
       if (this.isAddNewService == false) {
         this.fs.copyTpl(
-          this.templatePath('main/build/build' + buildScriptExtension),
+          this.templatePath('../../utilityscripts/main/build/build' + buildScriptExtension),
           this.destinationPath(path.join(process.cwd(), 'build' + buildScriptExtension)),
           {
             testProject: testProject,

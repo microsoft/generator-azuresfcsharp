@@ -4,7 +4,7 @@ function Uninstall()
     Invoke-Expression "& $PSScriptRoot\uninstall.ps1"
     Exit
 }
-$path="./vscode-config.json"
+$path="<%= VScodeConfig %>"
 if(Test-Path -Path $path)
 {
     $AppPath = "$PSScriptRoot\<%= appPackage %>\<%= appPackage %>";

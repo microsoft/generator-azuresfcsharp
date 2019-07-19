@@ -6,7 +6,7 @@ uninstall () {
 }
 
 cd `dirname $0`
-path="./vscode-config.json"
+path="<%= VScodeConfig%>"
 
 if test -f "$path"; then
     AppPath = <%= appPackage %>+'/'+<%= appPackage %>;

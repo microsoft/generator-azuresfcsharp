@@ -1,9 +1,7 @@
 'use strict';
-
 var path      = require('path')
 , generators    = require('yeoman-generator')
 , yosay     = require('yosay')
-
 var JavaGenerator = generators.Base.extend({
     constructor: function () {
         generators.Base.apply(this, arguments);
@@ -17,10 +15,8 @@ var JavaGenerator = generators.Base.extend({
             throw err;
         }
     },
-
     prompting: function () {
         var done = this.async();
-
         var prompts = [{
             type: 'list'
             , name: 'frameworkType'
@@ -28,15 +24,12 @@ var JavaGenerator = generators.Base.extend({
             , default: this.config.get('frameworkType')
             , choices: ["Reliable Actor Service", "Reliable Stateless Service","Reliable Stateful Service"]
             }];
-
             this.prompt(prompts, function (props) {
             this.props = props;
             this.config.set(props);
-
             done();
         }.bind(this));
     },
-
     writing: function() {
         var libPath = "REPLACE_SFLIBSPATH";
         var isAddNewService = true; 
@@ -58,6 +51,5 @@ var JavaGenerator = generators.Base.extend({
         this.config.save();
     }
 });
-
 module.exports = JavaGenerator;
 

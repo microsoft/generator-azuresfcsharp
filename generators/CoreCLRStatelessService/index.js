@@ -45,10 +45,6 @@ var ClassGenerator = class extends Generator {
         this.serviceFQN = "statelessservice." + this.serviceFQN;
         this.dir = this.dir + "/statelessservice";
       }
-
-console.log(this.packageName);
-console.log(this.serviceFQN);
-console.log(this.dir);
     });
   }
 
@@ -60,7 +56,6 @@ console.log(this.dir);
   }
 
   writing() {
-console.log('writing start');
     var serviceProjName = this.serviceName;
     var appPackage = this.props.projName;
     var servicePackage = this.serviceName + "Pkg";
@@ -115,7 +110,7 @@ console.log('writing start');
     }
     if (is_Linux) serviceManifestFile = "ServiceManifest_Linux.xml";
     if (is_mac) serviceManifestFile = "ServiceManifest.xml";
-console.log('writing config done');
+
     this.fs.copyTpl(
       this.templatePath(
         "service/app/appPackage/servicePackage/" + serviceManifestFile

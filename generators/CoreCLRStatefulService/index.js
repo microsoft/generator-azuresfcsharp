@@ -20,8 +20,7 @@ var ClassGenerator = class extends Generator {
     this.isAddNewService = this.options.isAddNewService;
   }
 
-  prompting() {
-    var done = this.async();
+  async prompting() {
     var utility = require("../utility");
     var prompts = [
       {
@@ -34,23 +33,19 @@ var ClassGenerator = class extends Generator {
       }
     ];
 
-    this.prompt(
-      prompts,
-      function(input) {
-        this.serviceFQN = input.serviceFQN;
-        var parts = this.serviceFQN.split("."),
-          name = parts.pop();
-        this.packageName = parts.join(".");
-        this.dir = parts.join("/");
-        this.serviceName = utility.capitalizeFirstLetter(name.trim());
-        if (!this.packageName) {
-          this.packageName = "statefulervice";
-          this.serviceFQN = "statefulservice." + this.serviceFQN;
-          this.dir = this.dir + "/statefulservice";
-        }
-        done();
-      }.bind(this)
-    );
+    await this.prompt(prompts).then(answers => {
+      this.serviceFQN = answers.serviceFQN;
+      var parts = this.serviceFQN.split("."),
+        name = parts.pop();
+      this.packageName = parts.join(".");
+      this.dir = parts.join("/");
+      this.serviceName = utility.capitalizeFirstLetter(name.trim());
+      if (!this.packageName) {
+        this.packageName = "statefulservice";
+        this.serviceFQN = "statefulservice." + this.serviceFQN;
+        this.dir = this.dir + "/statefulservice";
+      }
+    });
   }
 
   initializing() {
@@ -416,24 +411,30 @@ var ClassGenerator = class extends Generator {
         );
       }
     }
-    this.template(
-      "service/app/appPackage/servicePackage/Config/_readme.txt",
-      path.join(
-        appPackage,
-        appPackagePath,
-        servicePackage,
-        "Config",
-        "_readme.txt"
+
+    this.fs.copyTpl(
+      this.templatePath("service/app/appPackage/servicePackage/Config/_readme.txt"),
+      this.destinationPath(
+        path.join(
+          appPackage,
+          appPackagePath,
+          servicePackage,
+          "Config",
+          "_readme.txt"
+        )
       )
     );
-    this.template(
-      "service/app/appPackage/servicePackage/Data/_readme.txt",
-      path.join(
-        appPackage,
-        appPackagePath,
-        servicePackage,
-        "Data",
-        "_readme.txt"
+
+    this.fs.copyTpl(
+      this.templatePath("service/app/appPackage/servicePackage/Data/_readme.txt"),
+      this.destinationPath(
+        path.join(
+          appPackage,
+          appPackagePath,
+          servicePackage,
+          "Data",
+          "_readme.txt"
+        )
       )
     );
   }

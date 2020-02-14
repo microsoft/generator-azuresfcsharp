@@ -39,15 +39,14 @@ var JavaGenerator = class extends Generator {
     ];
 
     var answers = await this.prompt(prompts);
-
-console.log(answers);
     answers.projName = answers.projName.trim();
 
+    this.props = answers;
     this.config.set(answers);
   }
 
   writing() {
-  console.log(props)
+console.log(this.props);
 console.log('main writing');
     var libPath = "REPLACE_SFLIBSPATH";
     var isAddNewService = false;

@@ -46,6 +46,10 @@ var ClassGenerator = class extends Generator {
         this.serviceFQN = "statelessservice." + this.serviceFQN;
         this.dir = this.dir + "/statelessservice";
       }
+
+      console.log(this.packageName);
+      console.log(this.serviceFQN);
+      console.log(this.dir);
     });
   }
 

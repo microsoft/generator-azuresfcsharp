@@ -51,6 +51,14 @@ var ClassGenerator = class extends Generator {
         done();
       }.bind(this)
     );
+
+    /*
+    var answers = await this.prompt(prompts);
+    answers.projName = answers.projName.trim();
+
+    this.props = answers;
+    this.config.set(answers);
+    */
   }
 
   initializing() {

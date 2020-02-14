@@ -38,16 +38,16 @@ var JavaGenerator = class extends Generator {
       }
     ];
 
-    var answers = await this.prompt(prompts);
-    answers.projName = answers.projName.trim();
+    await this.prompt(prompts).then((answers) => {
+      answers.projName = answers.projName.trim();
 
-    this.props = answers;
-    this.config.set(answers);
+      this.props = answers;
+      this.config.set(answers);
+    });
   }
 
   writing() {
-console.log(this.props);
-console.log('main writing');
+    console.log(this.props);
     var libPath = "REPLACE_SFLIBSPATH";
     var isAddNewService = false;
     if (this.props.frameworkType == "Reliable Actor Service") {
@@ -55,7 +55,6 @@ console.log('main writing');
         options: { libPath: libPath, isAddNewService: isAddNewService }
       });
     } else if (this.props.frameworkType == "Reliable Stateless Service") {
-console.log('stateless entering');
       this.composeWith("azuresfcsharp:CoreCLRStatelessService", {
         options: { libPath: libPath, isAddNewService: isAddNewService }
       });

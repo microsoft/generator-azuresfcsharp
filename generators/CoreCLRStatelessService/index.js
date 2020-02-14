@@ -428,24 +428,29 @@ console.log('writing config done');
       }
     );
 
-    this.template(
-      "service/app/appPackage/servicePackage/Config/_readme.txt",
-      path.join(
-        appPackage,
-        appPackagePath,
-        servicePackage,
-        "Config",
-        "_readme.txt"
+    this.fs.copyTpl(
+      this.templatePath("service/app/appPackage/servicePackage/Config/_readme.txt"),
+      this.destinationPath(
+        path.join(
+          appPackage,
+          appPackagePath,
+          servicePackage,
+          "Config",
+          "_readme.txt"
+        )
       )
     );
-    this.template(
-      "service/app/appPackage/servicePackage/Data/_readme.txt",
-      path.join(
-        appPackage,
-        appPackagePath,
-        servicePackage,
-        "Data",
-        "_readme.txt"
+
+    this.fs.copyTpl(
+      this.templatePath("service/app/appPackage/servicePackage/Data/_readme.txt"),
+      this.destinationPath(
+        path.join(
+          appPackage,
+          appPackagePath,
+          servicePackage,
+          "Data",
+          "_readme.txt"
+        )
       )
     );
   }

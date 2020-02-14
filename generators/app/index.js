@@ -12,9 +12,7 @@ var JavaGenerator = class extends Generator {
     this.desc("Generate Service Fabric CSharp app template");
   }
 
-  prompting() {
-    var done = this.async();
-
+  async prompting() {
     this.log(yosay("Welcome to Service Fabric generator for CSharp"));
 
     var prompts = [
@@ -40,18 +38,16 @@ var JavaGenerator = class extends Generator {
       }
     ];
 
-    this.prompt(
-      prompts,
-      function(props) {
-        this.props = props;
-        this.props.projName = this.props.projName.trim();
-        this.config.set(props);
-        done();
-      }.bind(this)
-    );
+    var answers = await this.prompt(prompts);
+
+    this.answers.projName = this.answers.projName.trim();
+console.log(answers);
+
+    this.config.set(answers);
   }
 
   writing() {
+  console.log(props)
 console.log('main writing');
     var libPath = "REPLACE_SFLIBSPATH";
     var isAddNewService = false;

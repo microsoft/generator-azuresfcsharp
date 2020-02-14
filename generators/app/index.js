@@ -40,8 +40,8 @@ var JavaGenerator = class extends Generator {
 
     var answers = await this.prompt(prompts);
 
-    this.answers.projName = this.answers.projName.trim();
 console.log(answers);
+    answers.projName = answers.projName.trim();
 
     this.config.set(answers);
   }

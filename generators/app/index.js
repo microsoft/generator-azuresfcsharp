@@ -52,6 +52,7 @@ var JavaGenerator = class extends Generator {
   }
 
   writing() {
+console.log('main writing');
     var libPath = "REPLACE_SFLIBSPATH";
     var isAddNewService = false;
     if (this.props.frameworkType == "Reliable Actor Service") {
@@ -59,6 +60,7 @@ var JavaGenerator = class extends Generator {
         options: { libPath: libPath, isAddNewService: isAddNewService }
       });
     } else if (this.props.frameworkType == "Reliable Stateless Service") {
+console.log('stateless entering');
       this.composeWith("azuresfcsharp:CoreCLRStatelessService", {
         options: { libPath: libPath, isAddNewService: isAddNewService }
       });

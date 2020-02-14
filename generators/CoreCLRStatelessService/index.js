@@ -21,7 +21,6 @@ var ClassGenerator = class extends Generator {
   }
 
   async prompting() {
-    var done = this.async();
     var utility = require("../utility");
     var prompts = [
       {
@@ -47,9 +46,9 @@ var ClassGenerator = class extends Generator {
         this.dir = this.dir + "/statelessservice";
       }
 
-      console.log(this.packageName);
-      console.log(this.serviceFQN);
-      console.log(this.dir);
+console.log(this.packageName);
+console.log(this.serviceFQN);
+console.log(this.dir);
     });
   }
 

@@ -38,7 +38,7 @@ var JavaGenerator = class extends Generator {
       }
     ];
 
-    await this.prompt(prompts).then((answers) => {
+    await this.prompt(prompts).then(answers => {
       answers.projName = answers.projName.trim();
 
       this.props = answers;
@@ -47,7 +47,6 @@ var JavaGenerator = class extends Generator {
   }
 
   writing() {
-    console.log(this.props);
     var libPath = "REPLACE_SFLIBSPATH";
     var isAddNewService = false;
     if (this.props.frameworkType == "Reliable Actor Service") {

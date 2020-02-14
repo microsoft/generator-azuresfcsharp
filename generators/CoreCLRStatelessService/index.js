@@ -20,7 +20,7 @@ var ClassGenerator = class extends Generator {
     this.isAddNewService = this.options.isAddNewService;
   }
 
-  prompting() {
+  async prompting() {
     var done = this.async();
     var utility = require("../utility");
     var prompts = [
@@ -34,31 +34,19 @@ var ClassGenerator = class extends Generator {
       }
     ];
 
-    this.prompt(
-      prompts,
-      function(input) {
-        this.serviceFQN = input.serviceFQN;
-        var parts = this.serviceFQN.split("."),
-          name = parts.pop();
-        this.packageName = parts.join(".");
-        this.dir = parts.join("/");
-        this.serviceName = utility.capitalizeFirstLetter(name.trim());
-        if (!this.packageName) {
-          this.packageName = "statelessservice";
-          this.serviceFQN = "statelessservice." + this.serviceFQN;
-          this.dir = this.dir + "/statelessservice";
-        }
-        done();
-      }.bind(this)
-    );
-
-    /*
-    var answers = await this.prompt(prompts);
-    answers.projName = answers.projName.trim();
-
-    this.props = answers;
-    this.config.set(answers);
-    */
+    await this.prompt(prompts).then(answers => {
+      this.serviceFQN = answers.serviceFQN;
+      var parts = this.serviceFQN.split("."),
+        name = parts.pop();
+      this.packageName = parts.join(".");
+      this.dir = parts.join("/");
+      this.serviceName = utility.capitalizeFirstLetter(name.trim());
+      if (!this.packageName) {
+        this.packageName = "statelessservice";
+        this.serviceFQN = "statelessservice." + this.serviceFQN;
+        this.dir = this.dir + "/statelessservice";
+      }
+    });
   }
 
   initializing() {

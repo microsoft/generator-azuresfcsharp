@@ -57,6 +57,7 @@ var ClassGenerator = class extends Generator {
   }
 
   writing() {
+console.log('writing start');
     var serviceProjName = this.serviceName;
     var appPackage = this.props.projName;
     var servicePackage = this.serviceName + "Pkg";
@@ -111,7 +112,7 @@ var ClassGenerator = class extends Generator {
     }
     if (is_Linux) serviceManifestFile = "ServiceManifest_Linux.xml";
     if (is_mac) serviceManifestFile = "ServiceManifest.xml";
-
+console.log('writing config done');
     this.fs.copyTpl(
       this.templatePath(
         "service/app/appPackage/servicePackage/" + serviceManifestFile

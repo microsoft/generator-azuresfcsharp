@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.1.274" />
-    <PackageReference Include="Microsoft.ServiceFabric" Version="6.2.274" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.1.274" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="4.1.407" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="7.1.407" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="4.1.407" />
   </ItemGroup>
 
 </Project>

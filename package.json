@@ -19,7 +19,7 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "xml2js": "^0.4.23",
-    "yeoman-generator": "^4.5.0",
+    "yeoman-generator": "^5.9.0",
     "yosay": "^2.0.2"
   },
   "repository": "https://github.com/Azure/generator-azuresfcsharp",

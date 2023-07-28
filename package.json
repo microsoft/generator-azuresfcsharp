@@ -1,6 +1,6 @@
 {
   "name": "generator-azuresfcsharp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Azure Service Fabric CSharp app template generator",
   "homepage": "https://azure.microsoft.com/en-in/services/service-fabric/",
   "authors": {

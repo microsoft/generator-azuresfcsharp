@@ -15,6 +15,6 @@
     <ProjectReference Include="../<%= actorInterfaceNamespace %>/<%= actorInterfaceNamespace %>.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.1.274" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="4.1.407" />
   </ItemGroup>
 </Project>
